@@ -1,6 +1,14 @@
+.root-font-size{
+  font-size:16px;
+}
+/* Use border-box everywhere to avoid unexpected width calculations */
+*, *::before, *::after { box-sizing: border-box; }
+
 :root{
   --bg: #0f172a;
   --text: #e6eef8;
+  --muted: #9fb1c8;
+  --radius: 10px;
 }
 html,body,#root{height:100%;}
 body{
@@ -11,5 +19,15 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 .app{text-align:center;padding:2rem}
+
+/* Ensure interactive elements are big enough on touch devices */
+button, input, select, textarea { font-size: 16px; }
+
+@media (max-width: 600px) {
+  body { padding: 0 0.5rem; }
+  .app { padding: 1rem; }
+}
