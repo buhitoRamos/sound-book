@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import './Login.css'
-import { supabase } from '../lib/supabaseClient'
+import NoteSVG from '../../assets/music-note.svg'
+import { supabase } from '../../lib/supabaseClient'
+import { toast } from 'react-hot-toast'
 
 export default function Login({ onLogin }) {
   const [username, setUsername] = useState('')
@@ -35,6 +37,7 @@ export default function Login({ onLogin }) {
       const user = data && data[0]
       if (!user) {
         setError('Usuario no encontrado')
+        toast.error('Usuario no encontrado')
         setLoading(false)
         return
       }
@@ -42,13 +45,16 @@ export default function Login({ onLogin }) {
       // Para demo: comparar password en claro (en producción usa hashing)
       if (user.pass !== password) {
         setError('Contraseña incorrecta')
+        toast.error('Contraseña incorrecta')
         setLoading(false)
         return
       }
 
-      // Devolver el objeto con la propiedad `user` (como está en la tabla)
-      // Si la columna `role` no existe, dejamos `role` indefinido.
-      onLogin({ id: user.id, user: user.user, role: user.role })
+      // Generar un token simple para la sesión (solo demo)
+      const token = btoa(`${user.user}:${Date.now()}`)
+      const session = { token, user: { id: user.id, user: user.user, role: user.role } }
+      onLogin(session)
+      toast.success('Bienvenido — entrando…')
     } catch (err) {
       console.error(err)
       setError('Error inesperado')
@@ -60,6 +66,7 @@ export default function Login({ onLogin }) {
   return (
     <div className="login-root">
       <div className="login-card">
+        <img src={NoteSVG} alt="nota musical" className="login-logo" />
         <h1>Sound-Book</h1>
         <p className="muted">Gestión para productores musicales</p>
 
@@ -93,6 +100,7 @@ export default function Login({ onLogin }) {
         </form>
 
         <div className="login-hint">Usa tus credenciales para acceder.</div>
+        <footer className="app-footer">🦉 buho software</footer>
       </div>
     </div>
   )

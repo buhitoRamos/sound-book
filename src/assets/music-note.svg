@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+  <!-- circular head with face -->
+  <circle cx="48" cy="56" r="28" fill="url(#g)" opacity="0.98" />
+  <g transform="translate(24,36)" fill="#fff">
+    <circle cx="14" cy="14" r="3.5" />
+    <circle cx="34" cy="14" r="3.5" />
+    <path d="M12 26c4 4 12 4 16 0" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- stem -->
+  <rect x="62" y="28" width="8" height="82" rx="4" fill="#0b1220" transform="rotate(-12 62 28)" />
+
+  <!-- flag -->
+  <path d="M70 40c18-8 30-2 30 14-6-6-18-6-30 0V40z" fill="url(#g)" opacity="0.95" transform="rotate(-6 80 54)" />
+
+  <!-- shadow circle for balance -->
+  <ellipse cx="56" cy="100" rx="36" ry="14" fill="rgba(2,6,23,0.45)" />
+
+  <!-- small accent star -->
+  <path d="M126 24l4.5 10 10 4.5-10 4.5L126 53l-4.5-10-10-4.5 10-4.5L126 24z" fill="#ffd166" opacity="0.95"/>
+</svg>

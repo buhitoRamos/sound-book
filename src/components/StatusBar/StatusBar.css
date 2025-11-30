@@ -1,0 +1,35 @@
+.statusbar{
+  --statusbar-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 18px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(8px);
+  border-bottom:1px solid rgba(0,0,0,0.06);
+  height:var(--statusbar-height);
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  z-index:1000;
+  width:100%;
+  transition:height 160ms ease, box-shadow 180ms ease, transform 160ms ease, background 180ms ease;
+}
+.status-left{display:flex;align-items:center;gap:10px}
+.status-logo{width:36px;height:36px;border-radius:8px;object-fit:cover}
+.status-title{font-weight:700;color:var(--text);font-size:1rem}
+.statusbar.scrolled{box-shadow:0 8px 30px rgba(2,6,23,0.45);transform:translateY(-1px)}
+.status-right{position:relative}
+.hamburger{width:44px;height:36px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;flex-direction:column;justify-content:center;gap:5px;padding:8px;cursor:pointer;align-items:center}
+.hamburger span{display:block;width:18px;height:2.5px;background:var(--text);border-radius:2px;transition:transform 160ms ease, opacity 120ms ease}
+.menu{position:absolute;right:6px;top:calc(var(--statusbar-height) + 8px);background:var(--card);border:1px solid rgba(0,0,0,0.06);padding:8px;border-radius:10px;box-shadow:0 12px 30px rgba(2,6,23,0.45);min-width:160px}
+.menu-item{display:block;width:100%;text-align:left;padding:10px 12px;border:0;background:transparent;color:var(--text);cursor:pointer;border-radius:8px;font-weight:600}
+.menu-item:hover{background:rgba(255,255,255,0.02)}
+
+@media (max-width:600px){
+  .status-title{font-size:0.95rem}
+  .status-logo{width:30px;height:30px}
+  .hamburger{width:40px;height:36px}
+  .menu{min-width:140px;right:4px}
+}

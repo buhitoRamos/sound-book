@@ -60,3 +60,21 @@ Archivos creados:
 - `src/App.jsx` — componente principal
 - `src/index.css` — estilos básicos
 - `.gitignore` — archivos ignorados
+
+Sesión en el navegador
+----------------------
+Al iniciar sesión la app guarda en `localStorage` la sesión bajo la clave `sb_session` con la forma:
+
+```json
+{ "token": "<token>", "user": { "id": <id>, "user": "cc" } }
+```
+
+La sesión se mantiene hasta que el usuario cierre sesión (botón en el dashboard) o se borre el `localStorage`.
+
+Usar la nota musical como icono de la app
+--------------------------------------
+He añadido `manifest.webmanifest` y enlaces en `index.html` para que el SVG `src/assets/music-note.svg` se utilice como icono cuando se agregue la app a la pantalla de inicio en dispositivos móviles (o se muestre como favicon en navegadores compatibles).
+
+Notas:
+- Algunos navegadores (especialmente iOS Safari) prefieren un PNG para `apple-touch-icon`. Si quieres soporte máximo, puedo generar PNGs de distintos tamaños y añadirlos.
+- Para probar: abre en un móvil moderno, usa "Agregar a pantalla de inicio" y debería usar la nota musical como icono.
