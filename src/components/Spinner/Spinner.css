@@ -1,0 +1,6 @@
+.spinner-root{display:flex;flex-direction:column;align-items:center;gap:8px}
+.spinner{animation:spin 1s linear infinite}
+.spinner .path{stroke:var(--text);stroke-linecap:round;opacity:0.85;stroke-dasharray:90;stroke-dashoffset:60}
+.spinner-msg{font-size:0.9rem;color:var(--muted)}
+
+@keyframes spin{100%{transform:rotate(360deg)}}

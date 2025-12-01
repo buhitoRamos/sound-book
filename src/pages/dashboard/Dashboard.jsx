@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import StatusBar from '../../components/StatusBar/StatusBar'
 import ChangePassword from '../../components/ChangePassword/ChangePassword'
+import ClientsList from '../../components/ClientsList/ClientsList'
+import Spinner from '../../components/Spinner/Spinner'
 
 export default function Dashboard({ user, onLogout }) {
-  const [view, setView] = useState('home')
+  const [view, setView] = useState('artists')
 
   function handleMenuSelect(key) {
+    if (key === 'artists') setView('artists')
     if (key === 'profile') setView('change-password')
     if (key === 'settings') setView('settings')
   }
@@ -14,17 +17,16 @@ export default function Dashboard({ user, onLogout }) {
     <div>
       <StatusBar title="Dashboard" onLogout={onLogout} onMenuSelect={handleMenuSelect} />
       <main style={{ padding: 20, paddingTop: 'calc(8px + var(--statusbar-height))' }}>
-        {view === 'home' && (
+        {view === 'artists' && (
           <>
-            <h1>Dashboard</h1>
+            <h1>Artistas / Bandas</h1>
             <p>Usuario: {user?.user}</p>
-            <p>Rol: {user?.role}</p>
-            <button onClick={onLogout}>Cerrar sesión</button>
+            <ClientsList SpinnerComponent={Spinner} user={user} onSelect={(c) => console.log('selected', c)} />
           </>
         )}
 
         {view === 'change-password' && (
-          <ChangePassword user={user} onDone={() => setView('home')} />
+          <ChangePassword SpinnerComponent={Spinner} user={user} onDone={() => setView('artists')} />
         )}
 
         {view === 'settings' && (

@@ -52,6 +52,17 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
+                onMenuSelect && onMenuSelect('artists')
+                toast('Artistas/Bandas', { icon: '🎸' })
+              }}
+            >
+              Artistas / Bandas
+            </button>
+
+            <button
+              className="menu-item"
+              onClick={() => {
+                setOpen(false)
                 onMenuSelect && onMenuSelect('profile')
                 toast('Abriendo perfil', { icon: '👤' })
               }}

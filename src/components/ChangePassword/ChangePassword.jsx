@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { toast } from 'react-hot-toast'
 import './ChangePassword.css'
+import Spinner from '../Spinner/Spinner'
 
-export default function ChangePassword({ user, onDone }) {
+export default function ChangePassword({ user, onDone, SpinnerComponent = Spinner }) {
   const [currentPass, setCurrentPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [error, setError] = useState('')
@@ -92,10 +93,16 @@ export default function ChangePassword({ user, onDone }) {
         {error && <div className="cp-feedback cp-error">{error}</div>}
         {success && <div className="cp-feedback cp-success">{success}</div>}
 
-        <div className="cp-actions">
-          <button className="primary" disabled={loading} type="submit">{loading ? 'Guardando...' : 'Guardar'}</button>
-          <button type="button" className="secondary" onClick={() => onDone && onDone()}>Cancelar</button>
-        </div>
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
+            <SpinnerComponent message="Guardando..." />
+          </div>
+        ) : (
+          <div className="cp-actions">
+            <button className="primary" disabled={loading} type="submit">Guardar</button>
+            <button type="button" className="secondary" onClick={() => onDone && onDone()}>Cancelar</button>
+          </div>
+        )}
       </form>
     </section>
   )
