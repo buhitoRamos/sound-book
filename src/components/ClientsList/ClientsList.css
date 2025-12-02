@@ -6,8 +6,12 @@
 .clients-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .client-row{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
 .client-main{display:flex;flex-direction:column}
-.client-name{font-weight:700;color:var(--text)}
-.client-meta{font-size:0.85rem;color:var(--muted)}
+.client-top{display:flex;align-items:center;gap:10px}
+.client-name{font-weight:700;color:var(--text);font-size:1rem}
+.client-gender{font-size:0.9rem;color:var(--muted);padding:4px 8px;border-radius:8px;background:rgba(0,0,0,0.03)}
+.client-bottom{display:flex;flex-direction:column;gap:4px;margin-top:6px;align-items:flex-start}
+.client-email,.client-tel{font-size:0.9rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.client-email svg,.client-tel svg{color:var(--muted);opacity:0.9}
 .client-actions .btn{padding:8px 10px;border-radius:8px;border:0;background:linear-gradient(180deg,#1f6feb,#175fd1);color:#fff;cursor:pointer;margin-left:8px}
 .client-actions .btn.secondary{background:transparent;color:var(--text);border:1px solid rgba(0,0,0,0.06)}
 .client-actions .btn:hover{transform:translateY(-1px)}

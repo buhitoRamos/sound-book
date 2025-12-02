@@ -1,0 +1,35 @@
+.jobs-root{max-width:920px;margin:12px auto;padding:12px;background:var(--card);border-radius:10px;border:1px solid rgba(0,0,0,0.06)}
+.jobs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.jobs-header h3{margin:0;font-size:1.05rem;color:var(--text)}
+.jobs-count{background:rgba(0,0,0,0.06);padding:4px 8px;border-radius:8px;font-weight:700}
+.jobs-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.job-row{display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:8px;border:1px solid rgba(0,0,0,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+.job-main{display:flex;flex-direction:column}
+.job-title{font-weight:700;color:var(--text)}
+.job-status{font-size:0.8rem;color:var(--muted);margin-left:8px;padding:2px 8px;border-radius:6px;background:rgba(0,0,0,0.03);font-weight:600}
+.job-meta{font-size:0.85rem;color:var(--muted);margin-top:6px}
+.job-right{text-align:right;display:flex;flex-direction:column;gap:6px}
+.job-amount{font-weight:800;color:var(--text)}
+.job-exp{font-size:0.9rem;color:var(--muted)}
+
+@media (max-width:720px){
+  .job-row{flex-direction:column;align-items:flex-start}
+  .job-right{text-align:left;width:100%;margin-top:8px}
+}
+
+/* JobsForm styles */
+.jobs-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.jobs-form .job-textarea-wrapper{grid-column:1 / -1;display:flex;justify-content:center}
+.jobs-form .job-textarea-inner{width:100%}
+.jobs-form textarea{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06);min-height:88px}
+.jobs-form .money-row{display:flex;gap:8px;align-items:center}
+.jobs-form select{padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06);background:var(--card);color:var(--text);min-width:84px}
+.jobs-form input{padding:8px;border-radius:6px;border:1px solid rgba(0,0,0,0.06);background:var(--card);color:var(--text)}
+
+@media (max-width:720px){
+  .jobs-form{grid-template-columns:1fr;}
+  .jobs-form .money-row{flex-direction:row}
+}
+
+.job-payment{color:var(--text);font-weight:700}
+.job-debt{color:#c62828;font-weight:800;margin-top:6px}

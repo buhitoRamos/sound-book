@@ -74,11 +74,11 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
-                onMenuSelect && onMenuSelect('settings')
-                toast('Ajustes', { icon: '⚙️' })
+                onMenuSelect && onMenuSelect('jobs')
+                toast('Trabajos', { icon: '📁' })
               }}
             >
-              Ajustes
+              Trabajos
             </button>
 
             <button

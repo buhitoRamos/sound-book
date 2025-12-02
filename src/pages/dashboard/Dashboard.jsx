@@ -3,6 +3,7 @@ import StatusBar from '../../components/StatusBar/StatusBar'
 import ChangePassword from '../../components/ChangePassword/ChangePassword'
 import ClientsList from '../../components/ClientsList/ClientsList'
 import Spinner from '../../components/Spinner/Spinner'
+import JobsList from '../../components/JobsList/JobsList'
 
 export default function Dashboard({ user, onLogout }) {
   const [view, setView] = useState('artists')
@@ -11,6 +12,7 @@ export default function Dashboard({ user, onLogout }) {
     if (key === 'artists') setView('artists')
     if (key === 'profile') setView('change-password')
     if (key === 'settings') setView('settings')
+    if (key === 'jobs') setView('jobs')
   }
 
   return (
@@ -29,6 +31,11 @@ export default function Dashboard({ user, onLogout }) {
           <ChangePassword SpinnerComponent={Spinner} user={user} onDone={() => setView('artists')} />
         )}
 
+        {view === 'jobs' && (
+          <>
+            <JobsList />
+          </>
+        )}
         {view === 'settings' && (
           <div>
             <h2>Ajustes</h2>
