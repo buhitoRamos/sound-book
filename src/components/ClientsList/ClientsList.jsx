@@ -47,10 +47,11 @@ export default function ClientsList({ user, onSelect }) {
   return (
     <div className="clients-root">
       <div className="clients-header">
-        <h3>Clientes</h3>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <div className="clients-count">{clients.length}</div>
-          <input placeholder="Buscar artistas/bandas..." value={clientFilter} onChange={(e) => setClientFilter(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)' }} />
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div className="clients-count">{clients.length}</div>
+            <input placeholder="Buscar artistas/bandas..." value={clientFilter} onChange={(e) => setClientFilter(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)', marginTop: 6 }} />
+          </div>
           <button className="btn" onClick={() => { setCreating(true); setEditing(null) }}>Nuevo</button>
         </div>
       </div>
