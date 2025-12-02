@@ -38,6 +38,7 @@ export default function ClientsList({ user, onSelect }) {
   const [editing, setEditing] = useState(null)
   const [creating, setCreating] = useState(false)
   const [creatingJobFor, setCreatingJobFor] = useState(null)
+  const [clientFilter, setClientFilter] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [toDelete, setToDelete] = useState(null)
 
@@ -49,6 +50,7 @@ export default function ClientsList({ user, onSelect }) {
         <h3>Clientes</h3>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <div className="clients-count">{clients.length}</div>
+          <input placeholder="Buscar artistas/bandas..." value={clientFilter} onChange={(e) => setClientFilter(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)' }} />
           <button className="btn" onClick={() => { setCreating(true); setEditing(null) }}>Nuevo</button>
         </div>
       </div>
@@ -76,7 +78,11 @@ export default function ClientsList({ user, onSelect }) {
         <div className="clients-empty">No hay clientes registrados</div>
       ) : (
         <ul className="clients-list">
-          {clients.map((c) => (
+          {clients.filter(c => {
+            if (!clientFilter) return true
+            const q = clientFilter.toLowerCase()
+            return (c.name || '').toLowerCase().includes(q) || (c.email || '').toLowerCase().includes(q) || (c.tel || '').toLowerCase().includes(q)
+          }).map((c) => (
             <li key={c.id} className="client-row">
               <div className="client-main">
                 <div className="client-top">

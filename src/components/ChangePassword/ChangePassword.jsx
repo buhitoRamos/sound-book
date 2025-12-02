@@ -64,7 +64,7 @@ export default function ChangePassword({ user, onDone, SpinnerComponent = Spinne
           <input
             id="current-pass"
             aria-label="Contraseña actual"
-            placeholder="Ingresa tu contraseña actual"
+            placeholder="Tu contraseña actual"
             type={showCurrent ? 'text' : 'password'}
             value={currentPass}
             onChange={(e) => setCurrentPass(e.target.value)}
@@ -79,7 +79,7 @@ export default function ChangePassword({ user, onDone, SpinnerComponent = Spinne
           <input
             id="new-pass"
             aria-label="Nueva contraseña"
-            placeholder="Mínimo 8 caracteres"
+            placeholder="Nueva contraseña"
             type={showNew ? 'text' : 'password'}
             value={newPass}
             onChange={(e) => setNewPass(e.target.value)}

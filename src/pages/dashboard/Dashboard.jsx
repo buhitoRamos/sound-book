@@ -4,6 +4,7 @@ import ChangePassword from '../../components/ChangePassword/ChangePassword'
 import ClientsList from '../../components/ClientsList/ClientsList'
 import Spinner from '../../components/Spinner/Spinner'
 import JobsList from '../../components/JobsList/JobsList'
+import Payments from '../../components/Payments/Payments'
 
 export default function Dashboard({ user, onLogout }) {
   const [view, setView] = useState('artists')
@@ -13,6 +14,7 @@ export default function Dashboard({ user, onLogout }) {
     if (key === 'profile') setView('change-password')
     if (key === 'settings') setView('settings')
     if (key === 'jobs') setView('jobs')
+    if (key === 'payments') setView('payments')
   }
 
   return (
@@ -41,6 +43,11 @@ export default function Dashboard({ user, onLogout }) {
             <h2>Ajustes</h2>
             <p>Próximamente</p>
           </div>
+        )}
+        {view === 'payments' && (
+          <>
+            <Payments user={user} />
+          </>
         )}
       </main>
     </div>

@@ -52,6 +52,16 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
+                onMenuSelect && onMenuSelect('profile')
+                toast('Abriendo perfil', { icon: '👤' })
+              }}
+            >
+              Cambiar contraseña
+            </button>
+            <button
+              className="menu-item"
+              onClick={() => {
+                setOpen(false)
                 onMenuSelect && onMenuSelect('artists')
                 toast('Artistas/Bandas', { icon: '🎸' })
               }}
@@ -63,22 +73,22 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
-                onMenuSelect && onMenuSelect('profile')
-                toast('Abriendo perfil', { icon: '👤' })
+                onMenuSelect && onMenuSelect('jobs')
+                toast('Trabajos', { icon: '📁' })
               }}
             >
-              Perfil
+              Trabajos
             </button>
 
             <button
               className="menu-item"
               onClick={() => {
                 setOpen(false)
-                onMenuSelect && onMenuSelect('jobs')
-                toast('Trabajos', { icon: '📁' })
+                onMenuSelect && onMenuSelect('payments')
+                toast('Pagos', { icon: '💳' })
               }}
             >
-              Trabajos
+              Pagos
             </button>
 
             <button
