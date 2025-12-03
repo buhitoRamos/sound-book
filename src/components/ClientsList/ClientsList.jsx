@@ -47,11 +47,9 @@ export default function ClientsList({ user, onSelect }) {
   return (
     <div className="clients-root">
       <div className="clients-header">
+        <div className="clients-count" style={{ marginBottom: 8 }}>{clients.length} Clientes Totales</div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="clients-count">{clients.length}</div>
-            <input placeholder="Buscar artistas/bandas..." value={clientFilter} onChange={(e) => setClientFilter(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)', marginTop: 6 }} />
-          </div>
+          <input placeholder="Buscar artistas/bandas..." value={clientFilter} onChange={(e) => setClientFilter(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)', flex: 1 }} />
           <button className="btn" onClick={() => { setCreating(true); setEditing(null) }}>Nuevo</button>
         </div>
       </div>
