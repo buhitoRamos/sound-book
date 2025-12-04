@@ -1,5 +1,64 @@
-.payments-root { padding: 12px }
-.payments-controls { display:flex; gap:8px; align-items:center; margin-bottom:12px }
+.payments-root { padding: 16px }
+
+.payments-controls {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,252,0.9));
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(15,23,42,0.04);
+}
+
+.payments-controls .pc-left,
+.payments-controls .pc-center,
+.payments-controls .pc-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.payments-controls select,
+.payments-controls input[type="search"] {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.06);
+  background-color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: box-shadow 0.12s, border-color 0.12s;
+}
+
+.payments-controls input[type="search"] {
+  width: 100%;
+}
+
+.payments-controls select:focus,
+.payments-controls input[type="search"]:focus {
+  border-color: rgba(59,130,246,0.9);
+  box-shadow: 0 6px 24px rgba(59,130,246,0.06);
+}
+
+.payments-controls .actions { display:flex; gap:8px }
+.payments-controls .actions .btn { padding: 8px 14px; border-radius:8px }
+
+.payments-controls .label-muted { color: var(--muted); font-size:0.9rem }
+
+.search-box { display:flex; align-items:center; gap:8px; width:100%; background: #fbfdff; padding:8px 10px; border-radius:8px; border:1px solid rgba(15,23,42,0.03) }
+.search-box svg { color: rgba(15,23,42,0.4) }
+.search-box input { border: none; padding: 6px 8px; outline: none; background: transparent }
+
+.btn { background: var(--accent); color: white; padding:8px 12px; border-radius:8px; border:none; cursor:pointer }
+.btn:hover { filter:brightness(0.95) }
+.btn.secondary { background: #f3f4f6; color: #111 }
+
+@media (max-width: 900px) {
+  .payments-controls { grid-template-columns: 1fr; }
+  .payments-controls .pc-right { justify-content: flex-end }
+}
+
 .payments-table { width:100%; border-collapse: collapse }
 .payments-table th, .payments-table td { padding:8px; border-bottom:1px solid rgba(0,0,0,0.06) }
 .payments-loading { padding: 16px }

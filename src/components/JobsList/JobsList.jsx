@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast'
 import Spinner from '../Spinner/Spinner'
 import Modal from '../Modal/Modal'
 import JobsForm from './JobsForm'
+import PaymentForm from '../Payments/PaymentForm'
 import './JobsList.css'
 
 export default function JobsList({ user }) {
@@ -25,6 +26,7 @@ export default function JobsList({ user }) {
   }, [])
 
   const [editing, setEditing] = useState(null)
+  const [payingJob, setPayingJob] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [toDelete, setToDelete] = useState(null)
   const [filterText, setFilterText] = useState('')
@@ -111,6 +113,7 @@ export default function JobsList({ user }) {
                       return null
                     })()}
                     <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                      <button className="btn" onClick={() => setPayingJob(j)}>Pagar</button>
                       <button className="btn" onClick={() => setEditing(j)}>Editar</button>
                       <button className="btn danger" onClick={() => { setToDelete(j); setModalOpen(true) }}>Borrar</button>
                     </div>
@@ -135,6 +138,17 @@ export default function JobsList({ user }) {
             }
           }} confirmLabel="Eliminar">
             <p>¿Deseas eliminar el trabajo <strong>{toDelete?.job}</strong> para la banda <strong>{toDelete?.bands?.name || toDelete?.band_id}</strong>?</p>
+          </Modal>
+
+          <Modal open={!!payingJob} title="Registrar Pago" showFooter={false} onCancel={() => setPayingJob(null)}>
+            {payingJob && (
+              <PaymentForm
+                initial={{ job_id: payingJob.id, currency: payingJob.currency }}
+                jobs={[payingJob]}
+                onSaved={() => { setPayingJob(null); loadJobs() }}
+                onCancel={() => setPayingJob(null)}
+              />
+            )}
           </Modal>
         </>
       )}
