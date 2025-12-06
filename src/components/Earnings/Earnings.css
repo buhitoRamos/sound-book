@@ -1,0 +1,124 @@
+.earnings-root {
+  padding: 0;
+}
+
+.earnings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.earnings-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.earnings-header select {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  font-size: 1rem;
+  background: white;
+}
+
+.earnings-summary {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  margin-bottom: 24px;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.earnings-summary h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stat-value.negative {
+  color: #dc2626;
+}
+
+.stat-value.positive {
+  color: #15803d;
+}
+
+.earnings-monthly h3 {
+  font-size: 1.2rem;
+  margin-bottom: 16px;
+}
+
+.earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.earnings-table th,
+.earnings-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  color: #1e293b;
+}
+
+.earnings-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.earnings-table td {
+  font-weight: 500;
+}
+
+.earnings-table td.negative {
+  color: #dc2626;
+}
+
+.earnings-table td.positive {
+  color: #15803d;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .earnings-table th, .earnings-table td {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}

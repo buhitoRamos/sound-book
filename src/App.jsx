@@ -41,12 +41,12 @@ export default function App() {
 
   return (
     <div className="app">
-      <Toaster position="top-right" />
       {!user ? (
         <Login onLogin={handleLogin} />
       ) : (
         <Dashboard user={user} onLogout={handleLogout} />
       )}
+        <Toaster position="bottom-center" />
     </div>
   )
 }

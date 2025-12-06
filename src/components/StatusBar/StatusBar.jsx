@@ -95,6 +95,17 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
+                onMenuSelect && onMenuSelect('earnings')
+                toast('Ganancias', { icon: '📈' })
+              }}
+            >
+              Ganancias
+            </button>
+
+            <button
+              className="menu-item"
+              onClick={() => {
+                setOpen(false)
                 onLogout && onLogout()
                 toast.success('Sesión cerrada')
               }}
@@ -104,7 +115,7 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
           </nav>
         )}
       </div>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="bottom-center" reverseOrder={false} />
     </header>
   )
 }

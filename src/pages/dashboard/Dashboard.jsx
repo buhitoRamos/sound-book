@@ -5,6 +5,7 @@ import ClientsList from '../../components/ClientsList/ClientsList'
 import Spinner from '../../components/Spinner/Spinner'
 import JobsList from '../../components/JobsList/JobsList'
 import Payments from '../../components/Payments/Payments'
+import Earnings from '../../components/Earnings/Earnings'
 import './Dashboard.css'
 
 export default function Dashboard({ user, onLogout }) {
@@ -16,6 +17,7 @@ export default function Dashboard({ user, onLogout }) {
     if (key === 'settings') setView('settings')
     if (key === 'jobs') setView('jobs')
     if (key === 'payments') setView('payments')
+    if (key === 'earnings') setView('earnings')
   }
 
   return (
@@ -48,6 +50,11 @@ export default function Dashboard({ user, onLogout }) {
         {view === 'payments' && (
           <>
             <Payments user={user} />
+          </>
+        )}
+        {view === 'earnings' && (
+          <>
+            <Earnings />
           </>
         )}
       </main>
