@@ -53,7 +53,7 @@ export default function ClientsList({ user, onSelect }) {
           <button className="btn" onClick={() => { setCreating(true); setEditing(null) }}>Nuevo</button>
         </div>
       </div>
-      <Modal open={!!creatingJobFor} title={creatingJobFor ? `Nuevo trabajo para ${creatingJobFor.name}` : ''} onCancel={() => setCreatingJobFor(null)} confirmLabel="Guardar" onConfirm={() => { /* noop: JobsForm handles save */ }}>
+      <Modal open={!!creatingJobFor} title={creatingJobFor ? `Nuevo trabajo para ${creatingJobFor.name}` : ''} showFooter={false} onCancel={() => setCreatingJobFor(null)}>
         {creatingJobFor && (
           <JobsForm SpinnerComponent={Spinner} initial={{ band_id: creatingJobFor.id }} onSaved={() => { setCreatingJobFor(null); }} onCancel={() => setCreatingJobFor(null)} />
         )}

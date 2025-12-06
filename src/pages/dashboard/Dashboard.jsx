@@ -5,6 +5,7 @@ import ClientsList from '../../components/ClientsList/ClientsList'
 import Spinner from '../../components/Spinner/Spinner'
 import JobsList from '../../components/JobsList/JobsList'
 import Payments from '../../components/Payments/Payments'
+import './Dashboard.css'
 
 export default function Dashboard({ user, onLogout }) {
   const [view, setView] = useState('artists')
@@ -20,7 +21,7 @@ export default function Dashboard({ user, onLogout }) {
   return (
     <div>
       <StatusBar title="Dashboard" onLogout={onLogout} onMenuSelect={handleMenuSelect} />
-      <main style={{ padding: 20, paddingTop: 'calc(8px + var(--statusbar-height))' }}>
+      <main className="dashboard-main">
         {view === 'artists' && (
           <>
             <h1>Artistas / Bandas</h1>

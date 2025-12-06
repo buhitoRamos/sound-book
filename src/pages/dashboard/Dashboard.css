@@ -1,0 +1,14 @@
+.dashboard-main {
+  margin: 0 auto;
+  padding: 20px;
+  padding-top: calc(20px + var(--statusbar-height));
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    width: 100%;
+    padding: 16px;
+    padding-top: calc(16px + var(--statusbar-height));
+  }
+}

@@ -111,7 +111,7 @@ export default function Payments({ user }) {
             <tbody>
               {paymentsForSelected().map(p => (
                 <tr key={p.id}>
-                  <td>{new Date(p.created_at).toLocaleString()}</td>
+                  <td>{new Date(p.created_at).toLocaleDateString()}</td>
                   <td>{jobs.find(j => j.id === p.job_id)?.job || p.job_id}</td>
                   <td>{formatAmount(p.amount, p.currency) || '-'}</td>
                   <td>{(p.currency || '').toString().toUpperCase()}</td>

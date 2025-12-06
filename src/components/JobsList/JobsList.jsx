@@ -61,15 +61,15 @@ export default function JobsList({ user }) {
         <div className="jobs-count">{jobs.length}</div>
       </div>
 
-      <div className="jobs-controls" style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-        <input placeholder="Buscar trabajos..." value={filterText} onChange={(e) => setFilterText(e.target.value)} style={{ flex: 1, padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)' }} />
-        <select value={filterBandId} onChange={(e) => setFilterBandId(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)' }}>
+      <div className="jobs-controls" style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+        <select value={filterBandId} onChange={(e) => setFilterBandId(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)', width: '100%' }}>
           <option value="">Todas las bandas</option>
           {[...new Map(jobs.map(j => [j.band_id, j.bands?.name || `Band ${j.band_id}`])).values()].map((name, idx) => {
             const bid = jobs.find(j => (j.bands?.name || `Band ${j.band_id}`) === name)?.band_id
             return <option key={bid} value={bid}>{name}</option>
           })}
         </select>
+        <input placeholder="Buscar trabajos..." value={filterText} onChange={(e) => setFilterText(e.target.value)} style={{ padding: 8, borderRadius: 6, border: '1px solid rgba(0,0,0,0.06)', width: '100%' }} />
       </div>
 
       {editing ? (

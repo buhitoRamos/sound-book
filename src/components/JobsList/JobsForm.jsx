@@ -76,8 +76,21 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         } else {
           payload.payment_amount = null
         }
-        const { error } = await supabase.from('jobs').insert(payload)
+        const { data: newJob, error } = await supabase.from('jobs').insert(payload).select().single()
         if (error) throw error
+
+        // If there is an initial payment, create a record in payments table
+        if (payload.payment_amount && payload.payment_amount > 0) {
+          const { error: payError } = await supabase.from('payments').insert({
+            job_id: newJob.id,
+            amount: payload.payment_amount,
+            currency: payload.payment_currency,
+            detail: 'Pago inicial',
+            created_at: new Date().toISOString()
+          })
+          if (payError) console.error('Error creating initial payment record', payError)
+        }
+
         toast.success('Trabajo creado')
       }
       onSaved && onSaved()
@@ -98,22 +111,28 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         </div>
       </div>
 
-      <div className="money-row">
-        <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-          <option value="ars">$</option>
-          <option value="usd">u$s</option>
-          <option value="eur">€</option>
-        </select>
-        <input placeholder="Monto" value={amount} onChange={(e) => setAmount(e.target.value)} />
+      <div>
+        <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Monto Total</label>
+        <div className="money-row">
+          <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+            <option value="ars">$</option>
+            <option value="usd">u$s</option>
+            <option value="eur">€</option>
+          </select>
+          <input placeholder="Monto" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        </div>
       </div>
 
-      <div className="money-row">
-        <select value={paymentCurrency} onChange={(e) => setPaymentCurrency(e.target.value)}>
-          <option value="ars">$</option>
-          <option value="usd">u$s</option>
-          <option value="eur">€</option>
-        </select>
-        <input placeholder="Pago" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+      <div>
+        <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Pago Inicial / A cuenta</label>
+        <div className="money-row">
+          <select value={paymentCurrency} onChange={(e) => setPaymentCurrency(e.target.value)}>
+            <option value="ars">$</option>
+            <option value="usd">u$s</option>
+            <option value="eur">€</option>
+          </select>
+          <input placeholder="Pago" value={paymentAmount} onChange={(e) => setPaymentAmount(e.target.value)} />
+        </div>
       </div>
 
       <div>
@@ -125,13 +144,16 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         </select>
       </div>
 
-      <div className="money-row">
-        <select value={expCurrency} onChange={(e) => setExpCurrency(e.target.value)}>
-          <option value="ars">$</option>
-          <option value="usd">u$s</option>
-          <option value="eur">€</option>
-        </select>
-        <input placeholder="Gastos" value={expenses} onChange={(e) => setExpenses(e.target.value)} />
+      <div>
+        <label style={{ display: 'block', fontSize: 12, marginBottom: 4 }}>Gastos</label>
+        <div className="money-row">
+          <select value={expCurrency} onChange={(e) => setExpCurrency(e.target.value)}>
+            <option value="ars">$</option>
+            <option value="usd">u$s</option>
+            <option value="eur">€</option>
+          </select>
+          <input placeholder="Gastos" value={expenses} onChange={(e) => setExpenses(e.target.value)} />
+        </div>
       </div>
       {loading ? (
         <div style={{ marginTop: 8 }}><SpinnerComponent message="Guardando..." /></div>
