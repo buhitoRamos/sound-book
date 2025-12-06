@@ -115,7 +115,6 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
           </nav>
         )}
       </div>
-      <Toaster position="bottom-center" reverseOrder={false} />
     </header>
   )
 }
