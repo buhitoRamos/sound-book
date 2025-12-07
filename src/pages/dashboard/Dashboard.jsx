@@ -38,7 +38,7 @@ export default function Dashboard({ user, onLogout }) {
 
         {view === 'jobs' && (
           <>
-            <JobsList />
+            <JobsList user={user} />
           </>
         )}
         {view === 'settings' && (
@@ -54,7 +54,7 @@ export default function Dashboard({ user, onLogout }) {
         )}
         {view === 'earnings' && (
           <>
-            <Earnings />
+            <Earnings user={user} />
           </>
         )}
       </main>

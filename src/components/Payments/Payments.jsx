@@ -26,14 +26,14 @@ export default function Payments({ user }) {
   }
 
   async function loadJobs() {
-    const { data, error } = await supabase.from('jobs').select('id, job, band_id, amount, currency, work_status, payment_amount, bands(name)')
+    const { data, error } = await supabase.from('jobs').select('id, job, band_id, amount, currency, work_status, payment_amount, bands(name)').eq('user_id', user?.id)
     if (!error) setJobs(data || [])
   }
 
   async function loadPayments() {
     setLoading(true)
     try {
-      const { data, error } = await supabase.from('payments').select('id, created_at, job_id, amount, currency, detail')
+      const { data, error } = await supabase.from('payments').select('id, created_at, job_id, amount, currency, detail').eq('user_id', user?.id)
       if (error) throw error
       setPayments(data || [])
     } catch (err) {
@@ -150,7 +150,7 @@ export default function Payments({ user }) {
 
       <Modal open={modalOpen} title={editing && editing.id ? 'Editar pago' : 'Nuevo pago'} showFooter={false} onCancel={() => { setModalOpen(false); setEditing(null) }} onConfirm={null}>
         {modalOpen && (
-          <PaymentForm initial={editing} jobs={jobs.filter(j => !selectedBand || String(j.band_id) === String(selectedBand))} onSaved={() => { setModalOpen(false); setEditing(null); loadPayments(); loadJobs(); }} onCancel={() => { setModalOpen(false); setEditing(null) }} />
+          <PaymentForm initial={editing} jobs={jobs.filter(j => !selectedBand || String(j.band_id) === String(selectedBand))} onSaved={() => { setModalOpen(false); setEditing(null); loadPayments(); loadJobs(); }} onCancel={() => { setModalOpen(false); setEditing(null) }} user={user} />
         )}
       </Modal>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { toast } from 'react-hot-toast'
 
-export default function PaymentForm({ initial = null, jobs = [], onSaved, onCancel }) {
+export default function PaymentForm({ initial = null, jobs = [], onSaved, onCancel, user }) {
   const [jobId, setJobId] = useState(initial?.job_id || '')
   const [amount, setAmount] = useState(initial?.amount ?? '')
   const [currency, setCurrency] = useState(initial?.currency || 'ars')
@@ -46,6 +46,11 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
   }
 
   async function save() {
+    if (!user?.id) {
+      toast.error('Error: usuario no identificado')
+      return
+    }
+    
     setLoading(true)
     try {
       const payload = { 
@@ -53,7 +58,8 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
         amount: amount === '' ? null : parseInt(Number(amount), 10), 
         currency, 
         detail,
-        created_at: paymentDate ? new Date(paymentDate).toISOString() : new Date().toISOString()
+        created_at: paymentDate ? new Date(paymentDate).toISOString() : new Date().toISOString(),
+        user_id: user.id
       }
       if (initial && initial.id) {
         const { data: before, error: beforeErr } = await supabase.from('payments').select('id, job_id, amount, currency').eq('id', initial.id).single()

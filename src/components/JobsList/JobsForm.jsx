@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabaseClient'
 import { toast } from 'react-hot-toast'
 import Spinner from '../Spinner/Spinner'
 
-export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerComponent = Spinner }) {
+export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerComponent = Spinner, user }) {
   const [job, setJob] = useState('')
   const [bandId, setBandId] = useState(null)
   const [amount, setAmount] = useState('')
@@ -41,6 +41,12 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
 
   async function handleSubmit(e) {
     e.preventDefault()
+    
+    if (!user?.id) {
+      toast.error('Error: usuario no identificado')
+      return
+    }
+    
     setLoading(true)
     try {
       if (initial && initial.id) {
@@ -63,7 +69,7 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         if (error) throw error
         toast.success('Trabajo actualizado')
       } else {
-        const payload = { job, currency, work_status: workStatus, exp_currency: expCurrency }
+        const payload = { job, currency, work_status: workStatus, exp_currency: expCurrency, user_id: user.id }
         if (bandId) payload.band_id = bandId
         payload.amount = amount === '' ? null : isNaN(Number(amount)) ? amount : Number(amount)
         payload.expenses = expenses === '' ? null : isNaN(Number(expenses)) ? expenses : Number(expenses)
@@ -86,9 +92,13 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
             amount: payload.payment_amount,
             currency: payload.payment_currency,
             detail: 'Pago inicial',
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            user_id: user.id
           })
-          if (payError) console.error('Error creating initial payment record', payError)
+          if (payError) {
+            console.error('Error creating initial payment record', payError)
+            toast.error('Trabajo creado pero no se pudo registrar el pago inicial')
+          }
         }
 
         toast.success('Trabajo creado')

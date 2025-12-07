@@ -14,7 +14,7 @@ export default function JobsList({ user }) {
   const loadJobs = useCallback(async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase.from('jobs').select('id, created_at, band_id, job, amount, currency, work_status, expenses, exp_currency, payment_currency, payment_amount, bands(name)').order('created_at', { ascending: false })
+      const { data, error } = await supabase.from('jobs').select('id, created_at, band_id, job, amount, currency, work_status, expenses, exp_currency, payment_currency, payment_amount, bands(name)').eq('user_id', user?.id).order('created_at', { ascending: false })
       if (error) throw error
       setJobs(data || [])
     } catch (err) {
@@ -23,7 +23,7 @@ export default function JobsList({ user }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user?.id])
 
   const [editing, setEditing] = useState(null)
   const [payingJob, setPayingJob] = useState(null)
@@ -75,7 +75,7 @@ export default function JobsList({ user }) {
       {editing ? (
         <div className="jobs-editing">
           <h3>Editar trabajo</h3>
-          <JobsForm SpinnerComponent={Spinner} initial={editing} onSaved={() => { setEditing(null); loadJobs() }} onCancel={() => setEditing(null)} />
+          <JobsForm SpinnerComponent={Spinner} initial={editing} onSaved={() => { setEditing(null); loadJobs() }} onCancel={() => setEditing(null)} user={user} />
         </div>
       ) : (
         <> 
@@ -147,6 +147,7 @@ export default function JobsList({ user }) {
                 jobs={[payingJob]}
                 onSaved={() => { setPayingJob(null); loadJobs() }}
                 onCancel={() => setPayingJob(null)}
+                user={user}
               />
             )}
           </Modal>

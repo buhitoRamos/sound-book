@@ -3,14 +3,14 @@ import { supabase } from '../../lib/supabaseClient'
 import Spinner from '../Spinner/Spinner'
 import './Earnings.css'
 
-export default function Earnings() {
+export default function Earnings({ user }) {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({ monthly: {}, yearly: {} })
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear())
 
   useEffect(() => {
-    loadData()
-  }, [])
+    if (user?.id) loadData()
+  }, [user?.id])
 
   async function loadData() {
     setLoading(true)
@@ -19,6 +19,7 @@ export default function Earnings() {
       const { data: payments, error: payErr } = await supabase
         .from('payments')
         .select('amount, currency, created_at')
+        .eq('user_id', user?.id)
       
       if (payErr) throw payErr
 
@@ -26,6 +27,7 @@ export default function Earnings() {
       const { data: jobs, error: jobErr } = await supabase
         .from('jobs')
         .select('expenses, exp_currency, created_at')
+        .eq('user_id', user?.id)
       
       if (jobErr) throw jobErr
 
