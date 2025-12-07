@@ -1,6 +1,6 @@
 // Google Calendar API Configuration
 export const GOOGLE_CONFIG = {
-  clientId: '501215429458-mkc6m9gs38cau7nggkfr59381in21cdp.apps.googleusercontent.com',
+  clientId: '501215429458-7earm5sbfqlgk0ru15ou07rll23jrkmn.apps.googleusercontent.com',
   apiKey: 'AIzaSyCoN69ay8wqd4ApoMsZmeVx9qKDj8JPcdY',
   discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
   scopes: 'https://www.googleapis.com/auth/calendar.events'
