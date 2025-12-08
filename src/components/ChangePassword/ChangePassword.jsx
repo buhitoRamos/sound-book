@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast'
 import './ChangePassword.css'
 import Spinner from '../Spinner/Spinner'
 
-export default function ChangePassword({ user, onDone, SpinnerComponent = Spinner }) {
+export default function ChangePassword({ user, onDone, onLogout, SpinnerComponent = Spinner }) {
   const [currentPass, setCurrentPass] = useState('')
   const [newPass, setNewPass] = useState('')
   const [error, setError] = useState('')
@@ -44,8 +44,12 @@ export default function ChangePassword({ user, onDone, SpinnerComponent = Spinne
       if (upErr) throw upErr
 
       setSuccess('Contraseña actualizada')
-      toast.success('Contraseña cambiada satisfactoriamente')
-      onDone && onDone()
+      toast.success('Contraseña cambiada. Vuelve a iniciar sesión')
+      
+      // Wait a moment for the toast to be visible, then logout
+      setTimeout(() => {
+        onLogout && onLogout()
+      }, 1500)
     } catch (err) {
       console.error(err)
       setError('Error actualizando contraseña')

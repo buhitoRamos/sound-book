@@ -35,7 +35,7 @@ export default function Dashboard({ user, onLogout }) {
         )}
 
         {view === 'change-password' && (
-          <ChangePassword SpinnerComponent={Spinner} user={user} onDone={() => setView('artists')} />
+          <ChangePassword SpinnerComponent={Spinner} user={user} onDone={() => setView('artists')} onLogout={onLogout} />
         )}
 
         {view === 'jobs' && (
