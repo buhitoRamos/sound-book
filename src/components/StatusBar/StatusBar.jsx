@@ -106,6 +106,17 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
               className="menu-item"
               onClick={() => {
                 setOpen(false)
+                onMenuSelect && onMenuSelect('help')
+                toast('Ayuda', { icon: '❓' })
+              }}
+            >
+              Ayuda
+            </button>
+
+            <button
+              className="menu-item"
+              onClick={() => {
+                setOpen(false)
                 onLogout && onLogout()
                 toast.success('Sesión cerrada')
               }}

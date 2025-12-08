@@ -6,6 +6,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import JobsList from '../../components/JobsList/JobsList'
 import Payments from '../../components/Payments/Payments'
 import Earnings from '../../components/Earnings/Earnings'
+import Help from '../../components/Help/Help'
 import './Dashboard.css'
 
 export default function Dashboard({ user, onLogout }) {
@@ -18,6 +19,7 @@ export default function Dashboard({ user, onLogout }) {
     if (key === 'jobs') setView('jobs')
     if (key === 'payments') setView('payments')
     if (key === 'earnings') setView('earnings')
+    if (key === 'help') setView('help')
   }
 
   return (
@@ -55,6 +57,11 @@ export default function Dashboard({ user, onLogout }) {
         {view === 'earnings' && (
           <>
             <Earnings user={user} />
+          </>
+        )}
+        {view === 'help' && (
+          <>
+            <Help />
           </>
         )}
       </main>
