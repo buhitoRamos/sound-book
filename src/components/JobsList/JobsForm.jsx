@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 import { toast } from 'react-hot-toast'
 import Spinner from '../Spinner/Spinner'
+import { initGoogleCalendar, createCalendarEvent } from '../../lib/googleCalendar'
 
 export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerComponent = Spinner, user }) {
   const [job, setJob] = useState('')
@@ -14,6 +15,8 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
   const [paymentCurrency, setPaymentCurrency] = useState('ars')
   const [paymentAmount, setPaymentAmount] = useState('')
   const [loading, setLoading] = useState(false)
+  const [eventDate, setEventDate] = useState('')
+  const [eventTime, setEventTime] = useState('')
 
   useEffect(() => {
       if (initial) {
@@ -36,6 +39,8 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
       setExpCurrency('')
       setPaymentCurrency('ars')
       setPaymentAmount('')
+      setEventDate('')
+      setEventTime('')
     }
   }, [initial])
 
@@ -112,6 +117,36 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
     }
   }
 
+  async function handleAddToCalendar() {
+    if (!eventDate || !eventTime) {
+      toast.error('Por favor ingresa fecha y hora del evento')
+      return
+    }
+
+    setLoading(true)
+    try {
+      await initGoogleCalendar()
+
+      const startDateTime = new Date(`${eventDate}T${eventTime}:00`)
+      const endDateTime = new Date(startDateTime.getTime() + 2 * 60 * 60 * 1000) // +2 hours
+
+      await createCalendarEvent({
+        summary: job || 'Trabajo de audio',
+        description: `Monto: ${currency.toUpperCase()} ${amount}\nEstado: ${workStatus}`,
+        startDateTime: startDateTime.toISOString(),
+        endDateTime: endDateTime.toISOString(),
+        location: ''
+      })
+
+      toast.success('Evento agregado al calendario')
+    } catch (err) {
+      console.error(err)
+      toast.error('Error al agregar evento al calendario')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="jobs-form" style={{ display: initial ? 'block' : 'none' }}>
       <div className="job-textarea-wrapper">
@@ -165,6 +200,79 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
           <input placeholder="Gastos" value={expenses} onChange={(e) => setExpenses(e.target.value)} />
         </div>
       </div>
+
+      <div style={{ borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: 16, marginTop: 16 }}>
+        <label style={{ display: 'block', fontSize: 12, marginBottom: 8, fontWeight: 600, color: '#1e293b' }}>📅 Agregar al Google Calendar</label>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Fecha</label>
+            <input
+              type="date"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                border: '1px solid rgba(0,0,0,0.1)',
+                fontSize: '14px',
+                background: 'white',
+                color: '#1e293b',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+              }}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Hora</label>
+            <input
+              type="time"
+              value={eventTime}
+              onChange={(e) => setEventTime(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                border: '1px solid rgba(0,0,0,0.1)',
+                fontSize: '14px',
+                background: 'white',
+                color: '#1e293b',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+              }}
+            />
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn secondary"
+          onClick={handleAddToCalendar}
+          disabled={loading || !eventDate || !eventTime}
+          style={{
+            width: '100%',
+            padding: '12px',
+            fontSize: '14px',
+            fontWeight: 600,
+            background: !eventDate || !eventTime ? '#e2e8f0' : '#10b981',
+            color: !eventDate || !eventTime ? '#94a3b8' : 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: !eventDate || !eventTime ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            if (eventDate && eventTime && !loading) {
+              e.target.style.background = '#059669'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (eventDate && eventTime && !loading) {
+              e.target.style.background = '#10b981'
+            }
+          }}
+        >
+          📅 Agregar Evento a Google Calendar
+        </button>
+      </div>
+
       {loading ? (
         <div style={{ marginTop: 8 }}><SpinnerComponent message="Guardando..." /></div>
       ) : (
