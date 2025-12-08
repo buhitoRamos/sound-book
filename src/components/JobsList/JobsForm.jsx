@@ -7,6 +7,7 @@ import { initGoogleCalendar, createCalendarEvent } from '../../lib/googleCalenda
 export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerComponent = Spinner, user }) {
   const [job, setJob] = useState('')
   const [bandId, setBandId] = useState(null)
+  const [bands, setBands] = useState([])
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState('ars')
   const [workStatus, setWorkStatus] = useState('in_progress')
@@ -17,6 +18,15 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
   const [loading, setLoading] = useState(false)
   const [eventDate, setEventDate] = useState('')
   const [eventTime, setEventTime] = useState('')
+  const [eventEndTime, setEventEndTime] = useState('')
+
+  useEffect(() => {
+    async function loadBands() {
+      const { data } = await supabase.from('bands').select('id, name').eq('user_id', user?.id)
+      if (data) setBands(data)
+    }
+    if (user?.id) loadBands()
+  }, [user?.id])
 
   useEffect(() => {
       if (initial) {
@@ -41,6 +51,7 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
       setPaymentAmount('')
       setEventDate('')
       setEventTime('')
+      setEventEndTime('')
     }
   }, [initial])
 
@@ -118,8 +129,16 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
   }
 
   async function handleAddToCalendar() {
-    if (!eventDate || !eventTime) {
-      toast.error('Por favor ingresa fecha y hora del evento')
+    if (!eventDate || !eventTime || !eventEndTime) {
+      toast.error('Por favor ingresa fecha, hora de inicio y hora de fin')
+      return
+    }
+
+    const startDateTime = new Date(`${eventDate}T${eventTime}:00`)
+    const endDateTime = new Date(`${eventDate}T${eventEndTime}:00`)
+
+    if (endDateTime <= startDateTime) {
+      toast.error('La hora de fin debe ser posterior a la hora de inicio')
       return
     }
 
@@ -127,12 +146,12 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
     try {
       await initGoogleCalendar()
 
-      const startDateTime = new Date(`${eventDate}T${eventTime}:00`)
-      const endDateTime = new Date(startDateTime.getTime() + 2 * 60 * 60 * 1000) // +2 hours
+      const selectedBand = bands.find(b => b.id === bandId)
+      const bandName = selectedBand?.name || 'Artista'
 
       await createCalendarEvent({
-        summary: job || 'Trabajo de audio',
-        description: `Monto: ${currency.toUpperCase()} ${amount}\nEstado: ${workStatus}`,
+        summary: `Turno con artista: ${bandName}`,
+        description: `Trabajo: ${job || 'Sin descripción'}\nMonto: ${currency.toUpperCase()} ${amount}\nEstado: ${workStatus}`,
         startDateTime: startDateTime.toISOString(),
         endDateTime: endDateTime.toISOString(),
         location: ''
@@ -223,11 +242,29 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
             />
           </div>
           <div style={{ flex: 1 }}>
-            <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Hora</label>
+            <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Hora Inicio</label>
             <input
               type="time"
               value={eventTime}
               onChange={(e) => setEventTime(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                border: '1px solid rgba(0,0,0,0.1)',
+                fontSize: '14px',
+                background: 'white',
+                color: '#1e293b',
+                fontFamily: 'system-ui, -apple-system, sans-serif'
+              }}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Hora Fin</label>
+            <input
+              type="time"
+              value={eventEndTime}
+              onChange={(e) => setEventEndTime(e.target.value)}
               style={{
                 width: '100%',
                 padding: '10px 12px',
@@ -245,26 +282,26 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
           type="button"
           className="btn secondary"
           onClick={handleAddToCalendar}
-          disabled={loading || !eventDate || !eventTime}
+          disabled={loading || !eventDate || !eventTime || !eventEndTime}
           style={{
             width: '100%',
             padding: '12px',
             fontSize: '14px',
             fontWeight: 600,
-            background: !eventDate || !eventTime ? '#e2e8f0' : '#10b981',
-            color: !eventDate || !eventTime ? '#94a3b8' : 'white',
+            background: !eventDate || !eventTime || !eventEndTime ? '#e2e8f0' : '#10b981',
+            color: !eventDate || !eventTime || !eventEndTime ? '#94a3b8' : 'white',
             border: 'none',
             borderRadius: '8px',
-            cursor: !eventDate || !eventTime ? 'not-allowed' : 'pointer',
+            cursor: !eventDate || !eventTime || !eventEndTime ? 'not-allowed' : 'pointer',
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            if (eventDate && eventTime && !loading) {
+            if (eventDate && eventTime && eventEndTime && !loading) {
               e.target.style.background = '#059669'
             }
           }}
           onMouseLeave={(e) => {
-            if (eventDate && eventTime && !loading) {
+            if (eventDate && eventTime && eventEndTime && !loading) {
               e.target.style.background = '#10b981'
             }
           }}

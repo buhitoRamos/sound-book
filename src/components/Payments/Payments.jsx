@@ -115,7 +115,10 @@ export default function Payments({ user }) {
                   <td>{jobs.find(j => j.id === p.job_id)?.job || p.job_id}</td>
                   <td>{formatAmount(p.amount, p.currency) || '-'}</td>
                   <td>{(p.currency || '').toString().toUpperCase()}</td>
-                  <td>{(() => {
+                  <td style={(() => {
+                    const d = debtForJob(p.job_id)
+                    return d && d > 0 ? { color: '#dc2626', fontWeight: 700 } : {}
+                  })()}>{(() => {
                     const d = debtForJob(p.job_id)
                     const job = jobs.find(j => j.id === p.job_id)
                     return d === null ? '-' : formatAmount(d, job?.currency)
@@ -136,7 +139,10 @@ export default function Payments({ user }) {
                 </div>
                 <div className="pc-job">{jobs.find(j => j.id === p.job_id)?.job || p.job_id}</div>
                 <div className="pc-detail">{p.detail}</div>
-                <div className="pc-debt">Deuda: {(() => {
+                <div className="pc-debt" style={(() => {
+                  const d = debtForJob(p.job_id)
+                  return d && d > 0 ? { color: '#dc2626', fontWeight: 700 } : { color: 'var(--text)', fontWeight: 600 }
+                })()}>Deuda: {(() => {
                   const d = debtForJob(p.job_id)
                   const job = jobs.find(j => j.id === p.job_id)
                   return d === null ? '-' : formatAmount(d, job?.currency)

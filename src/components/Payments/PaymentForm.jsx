@@ -9,6 +9,7 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
   const [detail, setDetail] = useState(initial?.detail || '')
   const [jobText, setJobText] = useState('')
   const [initialJobText, setInitialJobText] = useState('')
+  const [jobStatus, setJobStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [paymentDate, setPaymentDate] = useState(initial?.created_at ? new Date(initial.created_at).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10))
 
@@ -26,6 +27,7 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
     const jt = jobObj?.job || ''
     setJobText(jt)
     setInitialJobText(jt)
+    setJobStatus(jobObj?.work_status || 'in_progress')
   }, [initial, jobs])
 
   function formatMoney(val, curr) {
@@ -97,6 +99,11 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
           const { error: jerr } = await supabase.from('jobs').update({ job: jobText }).eq('id', jobId)
           if (jerr) console.error('Failed updating job text', jerr)
         }
+        // Update job status if changed
+        if (jobId && jobStatus) {
+          const { error: statusErr } = await supabase.from('jobs').update({ work_status: jobStatus }).eq('id', jobId)
+          if (statusErr) console.error('Failed updating job status', statusErr)
+        }
         toast.success('Pago actualizado')
       } else {
         const { data: insertData, error } = await supabase.from('payments').insert(payload).select().single()
@@ -122,6 +129,11 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
           } catch (e) {
             console.error('Error updating job payment after insert', e)
             toast.error('Pago creado, error actualizando trabajo')
+          }
+          // Update job status if provided
+          if (jobStatus) {
+            const { error: statusErr } = await supabase.from('jobs').update({ work_status: jobStatus }).eq('id', jobId)
+            if (statusErr) console.error('Failed updating job status', statusErr)
           }
         } else {
           toast.success('Pago creado')
@@ -172,6 +184,24 @@ export default function PaymentForm({ initial = null, jobs = [], onSaved, onCanc
           <textarea rows={3} value={detail} onChange={e => setDetail(e.target.value)} style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid rgba(0,0,0,0.08)' }} />
         </label>
       </div>
+      
+      {selectedJob && (
+        <div style={{ marginBottom: 8 }}>
+          <label>
+            <div style={{ marginBottom: 6, color: 'var(--muted)' }}>Estado del trabajo</div>
+            <select 
+              value={jobStatus} 
+              onChange={e => setJobStatus(e.target.value)}
+              style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid rgba(0,0,0,0.08)' }}
+            >
+              <option value="in_progress">En progreso</option>
+              <option value="finish">Finalizado</option>
+              <option value="cancel">Cancelado</option>
+            </select>
+          </label>
+        </div>
+      )}
+      
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button className="btn secondary" onClick={() => onCancel && onCancel()}>Cancelar</button>
         <button className="btn" onClick={save} disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>

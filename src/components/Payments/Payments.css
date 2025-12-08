@@ -76,7 +76,7 @@
 .pc-detail { color: var(--muted); font-size: 0.95rem; margin-bottom:8px }
 .pc-actions { text-align: right }
 
-.pc-debt { margin-top:6px; font-weight:700; color: #d44 }
+.pc-debt { margin-top:6px; font-weight:700 }
 
 @media (max-width: 720px) {
 	.payments-table { display: none }
