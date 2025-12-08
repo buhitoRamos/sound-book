@@ -220,9 +220,10 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         </div>
       </div>
 
-      <div style={{ borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: 16, marginTop: 16 }}>
-        <label style={{ display: 'block', fontSize: 12, marginBottom: 8, fontWeight: 600, color: '#1e293b' }}>📅 Agregar al Google Calendar</label>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+      {user?.role === 'google' && (
+        <div style={{ borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: 16, marginTop: 16 }}>
+          <label style={{ display: 'block', fontSize: 12, marginBottom: 8, fontWeight: 600, color: '#1e293b' }}>📅 Agregar al Google Calendar</label>
+          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           <div style={{ flex: 1 }}>
             <label style={{ display: 'block', fontSize: 11, marginBottom: 4, color: '#64748b' }}>Fecha</label>
             <input
@@ -308,7 +309,8 @@ export default function JobsForm({ initial = null, onSaved, onCancel, SpinnerCom
         >
           📅 Agregar Evento a Google Calendar
         </button>
-      </div>
+        </div>
+      )}
 
       {loading ? (
         <div style={{ marginTop: 8 }}><SpinnerComponent message="Guardando..." /></div>

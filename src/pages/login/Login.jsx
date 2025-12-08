@@ -23,7 +23,7 @@ export default function Login({ onLogin }) {
       // Buscar en la tabla `users` donde el campo `user` sea igual
       const { data, error: queryError } = await supabase
         .from('users')
-        .select('id, user, pass')
+        .select('id, user, pass, role')
         .eq('user', username)
         .limit(1)
 
