@@ -21,7 +21,7 @@ export default function Payments({ user }) {
   useEffect(() => { loadBands(); loadJobs(); loadPayments() }, [])
 
   async function loadBands() {
-    const { data, error } = await supabase.from('bands').select('id, name')
+    const { data, error } = await supabase.from('bands').select('id, name').eq('user_id', user?.id)
     if (!error) setBands(data || [])
   }
 
