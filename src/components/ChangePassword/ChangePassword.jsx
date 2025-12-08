@@ -24,7 +24,7 @@ export default function ChangePassword({ user, onDone, onLogout, SpinnerComponen
     setLoading(true)
     try {
       // obtener el usuario actual desde la tabla
-      const { data, error: qErr } = await supabase.from('users').select('id, pass').eq('user', user.user).limit(1)
+      const { data, error: qErr } = await supabase.from('users').select('id, pass, session_version').eq('user', user.user).limit(1)
       if (qErr) throw qErr
       const u = data && data[0]
       if (!u) {
@@ -40,7 +40,12 @@ export default function ChangePassword({ user, onDone, onLogout, SpinnerComponen
         return
       }
 
-      const { error: upErr } = await supabase.from('users').update({ pass: newPass }).eq('id', u.id)
+      // Increment session_version to invalidate all existing sessions
+      const currentVersion = u.session_version || 1
+      const { error: upErr } = await supabase.from('users').update({ 
+        pass: newPass,
+        session_version: currentVersion + 1
+      }).eq('id', u.id)
       if (upErr) throw upErr
 
       setSuccess('Contraseña actualizada')

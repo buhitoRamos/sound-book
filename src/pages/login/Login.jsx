@@ -23,7 +23,7 @@ export default function Login({ onLogin }) {
       // Buscar en la tabla `users` donde el campo `user` sea igual
       const { data, error: queryError } = await supabase
         .from('users')
-        .select('id, user, pass, role')
+        .select('id, user, pass, role, session_version')
         .eq('user', username)
         .limit(1)
 
@@ -52,7 +52,11 @@ export default function Login({ onLogin }) {
 
       // Generar un token simple para la sesión (solo demo)
       const token = btoa(`${user.user}:${Date.now()}`)
-      const session = { token, user: { id: user.id, user: user.user, role: user.role } }
+      const session = { 
+        token, 
+        user: { id: user.id, user: user.user, role: user.role },
+        session_version: user.session_version || 1
+      }
       onLogin(session)
       toast.success('Bienvenido — entrando…')
     } catch (err) {
