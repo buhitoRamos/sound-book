@@ -8,6 +8,7 @@ const STORAGE_KEY = 'sb_session'
 
 export default function App() {
   const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   // Validate session against database
   async function validateSession(session) {
@@ -52,6 +53,8 @@ export default function App() {
         }
       } catch (err) {
         console.warn('Failed to load session', err)
+      } finally {
+        setLoading(false)
       }
     }
     loadSession()
@@ -96,7 +99,31 @@ export default function App() {
 
   return (
     <div className="app">
-      {!user ? (
+      {loading ? (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+        }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '4px solid rgba(255,255,255,0.3)',
+            borderTop: '4px solid white',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <p style={{ color: 'white', marginTop: 20, fontSize: '1.1rem' }}>Cargando...</p>
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      ) : !user ? (
         <Login onLogin={handleLogin} />
       ) : (
         <Dashboard user={user} onLogout={handleLogout} />

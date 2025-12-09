@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import StatusBar from '../../components/StatusBar/StatusBar'
 import ChangePassword from '../../components/ChangePassword/ChangePassword'
 import ClientsList from '../../components/ClientsList/ClientsList'
@@ -11,6 +11,23 @@ import './Dashboard.css'
 
 export default function Dashboard({ user, onLogout }) {
   const [view, setView] = useState('artists')
+  const [history, setHistory] = useState(['artists'])
+
+  useEffect(() => {
+    // Handle browser/mobile back button
+    function handlePopState(event) {
+      if (history.length > 1) {
+        const newHistory = [...history]
+        newHistory.pop() // Remove current view
+        const previousView = newHistory[newHistory.length - 1] || 'artists'
+        setHistory(newHistory)
+        setView(previousView)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [history])
 
   function handleMenuSelect(key) {
     if (key === 'artists') setView('artists')
@@ -20,6 +37,10 @@ export default function Dashboard({ user, onLogout }) {
     if (key === 'payments') setView('payments')
     if (key === 'earnings') setView('earnings')
     if (key === 'help') setView('help')
+    
+    // Add to history and push state
+    setHistory(prev => [...prev, key])
+    window.history.pushState({ view: key }, '', '')
   }
 
   return (
