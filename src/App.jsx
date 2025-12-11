@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Login from './pages/login/Login'
 import Dashboard from './pages/dashboard/Dashboard'
+import AdminDashboard from './pages/admin-dashboard/AdminDashboard'
 import { Toaster } from 'react-hot-toast'
 import { supabase } from './lib/supabaseClient'
 
@@ -125,6 +126,8 @@ export default function App() {
         </div>
       ) : !user ? (
         <Login onLogin={handleLogin} />
+      ) : user?.role === 'admin' ? (
+        <AdminDashboard user={user} onLogout={handleLogout} />
       ) : (
         <Dashboard user={user} onLogout={handleLogout} />
       )}

@@ -3,7 +3,7 @@ import './StatusBar.css'
 import NoteSVG from '../../assets/music-note.svg'
 import { Toaster, toast } from 'react-hot-toast'
 
-export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect }) {
+export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect, adminOnlyMenu = false }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const ref = useRef()
@@ -48,81 +48,96 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect 
 
         {open && (
           <nav className="menu">
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('profile')
-                toast('Abriendo perfil', { icon: '👤' })
-              }}
-            >
-              Cambiar contraseña
-            </button>
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('artists')
-                toast('Artistas/Bandas', { icon: '🎸' })
-              }}
-            >
-              Artistas / Bandas
-            </button>
+            {adminOnlyMenu ? (
+              <button
+                className="menu-item"
+                onClick={() => {
+                  setOpen(false)
+                  onLogout && onLogout()
+                  toast.success('Sesión cerrada')
+                }}
+              >
+                Cerrar sesión
+              </button>
+            ) : (
+              <>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('profile')
+                    toast('Abriendo perfil', { icon: '👤' })
+                  }}
+                >
+                  Cambiar contraseña
+                </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('artists')
+                    toast('Artistas/Bandas', { icon: '🎸' })
+                  }}
+                >
+                  Artistas / Bandas
+                </button>
 
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('jobs')
-                toast('Trabajos', { icon: '📁' })
-              }}
-            >
-              Trabajos
-            </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('jobs')
+                    toast('Trabajos', { icon: '📁' })
+                  }}
+                >
+                  Trabajos
+                </button>
 
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('payments')
-                toast('Pagos', { icon: '💳' })
-              }}
-            >
-              Pagos
-            </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('payments')
+                    toast('Pagos', { icon: '💳' })
+                  }}
+                >
+                  Pagos
+                </button>
 
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('earnings')
-                toast('Ganancias', { icon: '📈' })
-              }}
-            >
-              Ganancias
-            </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('earnings')
+                    toast('Ganancias', { icon: '📈' })
+                  }}
+                >
+                  Ganancias
+                </button>
 
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onMenuSelect && onMenuSelect('help')
-                toast('Ayuda', { icon: '❓' })
-              }}
-            >
-              Ayuda
-            </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onMenuSelect && onMenuSelect('help')
+                    toast('Ayuda', { icon: '❓' })
+                  }}
+                >
+                  Ayuda
+                </button>
 
-            <button
-              className="menu-item"
-              onClick={() => {
-                setOpen(false)
-                onLogout && onLogout()
-                toast.success('Sesión cerrada')
-              }}
-            >
-              Cerrar sesión
-            </button>
+                <button
+                  className="menu-item"
+                  onClick={() => {
+                    setOpen(false)
+                    onLogout && onLogout()
+                    toast.success('Sesión cerrada')
+                  }}
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            )}
           </nav>
         )}
       </div>
