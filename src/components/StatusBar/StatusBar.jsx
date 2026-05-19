@@ -126,6 +126,16 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect,
                   Ayuda
                 </button>
 
+                <a
+                  className="menu-item"
+                  href="https://wa.me/5491139050391?text=Hola%2C%20necesito%20soporte%20con%20Sound-Book"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                >
+                  💬 Soporte
+                </a>
+
                 <button
                   className="menu-item"
                   onClick={() => {
