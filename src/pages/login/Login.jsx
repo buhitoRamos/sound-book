@@ -103,6 +103,15 @@ export default function Login({ onLogin }) {
           </button>
         </form>
 
+        <a
+          className="login-support-link"
+          href="https://wa.me/5491139050391?text=Hola%2C%20quiero%20darme%20de%20alta%20en%20Sound-Book"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📱 ¿No tenés cuenta? <strong>Darte de alta por WhatsApp</strong>
+        </a>
+
         <div className="login-hint">Usa tus credenciales para acceder.</div>
         <footer className="app-footer">🦉 buho software</footer>
       </div>
