@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Login from './pages/login/Login'
 import Dashboard from './pages/dashboard/Dashboard'
 import AdminDashboard from './pages/admin-dashboard/AdminDashboard'
-import { Toaster } from 'react-hot-toast'
+import { Toaster, toast } from 'react-hot-toast'
 import { supabase } from './lib/supabaseClient'
 
 const STORAGE_KEY = 'sb_session'
@@ -11,7 +11,7 @@ export default function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Validate session against database
+  // Validate session against database (session_version + auth_status)
   async function validateSession(session) {
     if (!session?.user?.id) return false
     try {
@@ -27,7 +27,25 @@ export default function App() {
       const storedVersion = session.session_version || 1
       const dbVersion = data.session_version || 1
       
-      return storedVersion === dbVersion
+      if (storedVersion !== dbVersion) return false
+
+      // Verificar si el usuario está activo en auth_status
+      const { data: authData, error: authError } = await supabase
+        .from('auth_status')
+        .select('status')
+        .eq('user_id', session.user.id)
+        .maybeSingle()
+
+      if (authError) {
+        // Si la tabla no existe, permitimos (fallback)
+        console.warn('auth_status check skipped:', authError.message)
+      } else if (authData && authData.status === false) {
+        // Usuario desactivado
+        toast.error('⚠️ Tu cuenta ha sido desactivada. Contactá a soporte.', { duration: 6000 })
+        return false
+      }
+
+      return true
     } catch (err) {
       console.error('Session validation error:', err)
       return false

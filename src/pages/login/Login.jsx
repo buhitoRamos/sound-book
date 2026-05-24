@@ -50,6 +50,23 @@ export default function Login({ onLogin }) {
         return
       }
 
+      // Verificar si el usuario está activo en auth_status
+      const { data: authData, error: authError } = await supabase
+        .from('auth_status')
+        .select('status')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (authError) {
+        console.error('Error verificando auth_status:', authError)
+        // Si la tabla no existe, permitimos el acceso (fallback)
+      } else if (authData && authData.status === false) {
+        setError('⚠️ Tu cuenta ha sido desactivada. Por favor comunicate con soporte para más información.')
+        toast.error('Cuenta desactivada. Contactá a soporte.', { duration: 6000 })
+        setLoading(false)
+        return
+      }
+
       // Generar un token simple para la sesión (solo demo)
       const token = btoa(`${user.user}:${Date.now()}`)
       const session = { 

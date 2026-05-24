@@ -304,3 +304,151 @@
   }
 }
 
+/* Users management styles */
+.users-management {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.users-management h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #6366f1;
+  font-size: 1.1rem;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.user-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.user-card.active {
+  border-left: 4px solid #10b981;
+}
+
+.user-card.paused {
+  border-left: 4px solid #f59e0b;
+  opacity: 0.8;
+}
+
+.user-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-card-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: white;
+}
+
+.user-card-email {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.user-card-phone {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+.user-card-date {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.user-card-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.status-badge.paused {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.btn-toggle {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-toggle.pause {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.btn-toggle.pause:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.4);
+}
+
+.btn-toggle.activate {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.btn-toggle.activate:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.4);
+}
+
+.btn-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .user-card-status {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+

@@ -21,13 +21,15 @@ export default function AdminPayments({ user }) {
   const [allPayments, setAllPayments] = useState([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState('register')
+  const [authStatuses, setAuthStatuses] = useState({})
+  const [authStatusError, setAuthStatusError] = useState(null)
 
   useEffect(() => {
     async function fetchUsers() {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, user, role')
+          .select('id, user, role, first_name, last_name, phone, created_at')
           .neq('role', 'admin')
           .order('user', { ascending: true })
 
@@ -44,6 +46,36 @@ export default function AdminPayments({ user }) {
     }
     fetchUsers()
   }, [])
+
+  // Cargar auth_status de todos los usuarios
+  useEffect(() => {
+    async function fetchAuthStatuses() {
+      if (viewMode !== 'users') return
+      setAuthStatusError(null)
+      try {
+        const { data, error } = await supabase
+          .from('auth_status')
+          .select('*')
+
+        if (error) {
+          console.error('Error fetching auth_status:', error)
+          setAuthStatusError(error.message || 'Error al cargar estados')
+          toast.error('Error al cargar estados de usuarios: ' + (error.message || 'tabla no encontrada'))
+          return
+        }
+        const statusMap = {}
+        ;(data || []).forEach(s => {
+          statusMap[s.user_id] = s.status
+        })
+        setAuthStatuses(statusMap)
+      } catch (err) {
+        console.error(err)
+        setAuthStatusError(err.message || 'Error inesperado')
+        toast.error('Error al cargar estados de usuarios')
+      }
+    }
+    fetchAuthStatuses()
+  }, [viewMode])
 
   // Cargar todos los pagos al abrir el tab de historial
   useEffect(() => {
@@ -122,13 +154,17 @@ export default function AdminPayments({ user }) {
 
     try {
       const createdAtIso = new Date(paymentDate).toISOString()
+      const monthName = getMonthName(new Date(paymentDate).getMonth() + 1)
+      const year = new Date(paymentDate).getFullYear()
       const { error } = await supabase
         .from('admin_payments')
         .insert([
           {
             user_id: selectedUserId,
             amount: parseFloat(amount),
-            created_at: createdAtIso
+            created_at: createdAtIso,
+            status: 'completed',
+            description: `Pago mensual - ${monthName} ${year}`
           }
         ])
 
@@ -155,6 +191,49 @@ export default function AdminPayments({ user }) {
         .order('created_at', { ascending: false })
 
       setPayments(data || [])
+    } catch (err) {
+      console.error(err)
+      toast.error('Error inesperado')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleToggleUserStatus(userId, currentStatus) {
+    setLoading(true)
+    try {
+      // Check if auth_status exists for this user
+      const { data: existing } = await supabase
+        .from('auth_status')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle()
+
+      if (existing) {
+        // Update existing
+        const { error } = await supabase
+          .from('auth_status')
+          .update({ status: !currentStatus })
+          .eq('user_id', userId)
+
+        if (error) {
+          toast.error('Error al actualizar estado')
+          return
+        }
+      } else {
+        // Insert new
+        const { error } = await supabase
+          .from('auth_status')
+          .insert([{ user_id: userId, status: !currentStatus }])
+
+        if (error) {
+          toast.error('Error al crear estado')
+          return
+        }
+      }
+
+      setAuthStatuses(prev => ({ ...prev, [userId]: !currentStatus }))
+      toast.success(!currentStatus ? 'Usuario activado ✅' : 'Usuario pausado ⏸️')
     } catch (err) {
       console.error(err)
       toast.error('Error inesperado')
@@ -212,6 +291,12 @@ export default function AdminPayments({ user }) {
           onClick={() => setViewMode('view')}
         >
           Ver Historial
+        </button>
+        <button
+          className={`tab-button ${viewMode === 'users' ? 'active' : ''}`}
+          onClick={() => setViewMode('users')}
+        >
+          Usuarios
         </button>
       </div>
 
@@ -372,6 +457,51 @@ export default function AdminPayments({ user }) {
               </>
             )}
           </>
+        )}
+
+        {viewMode === 'users' && (
+          <div className="users-management">
+            <h3>Gestión de Usuarios</h3>
+            <p className="period-info">Activar o pausar el acceso de los usuarios</p>
+
+            {users.length > 0 ? (
+              <div className="users-list">
+                {users.map(u => {
+                  const isActive = authStatuses[u.id] !== false // default true if not set
+                  return (
+                    <div key={u.id} className={`user-card ${isActive ? 'active' : 'paused'}`}>
+                      <div className="user-card-info">
+                        <div className="user-card-name">
+                          {u.first_name && u.last_name 
+                            ? `${u.first_name} ${u.last_name}` 
+                            : u.user}
+                        </div>
+                        <div className="user-card-email">{u.user}</div>
+                        {u.phone && <div className="user-card-phone">📱 {u.phone}</div>}
+                        <div className="user-card-date">
+                          📅 Registrado: {new Date(u.created_at).toLocaleDateString('es-ES')}
+                        </div>
+                      </div>
+                      <div className="user-card-status">
+                        <span className={`status-badge ${isActive ? 'active' : 'paused'}`}>
+                          {isActive ? '✅ Activo' : '⏸️ Pausado'}
+                        </span>
+                        <button
+                          className={`btn-toggle ${isActive ? 'pause' : 'activate'}`}
+                          onClick={() => handleToggleUserStatus(u.id, isActive)}
+                          disabled={loading}
+                        >
+                          {isActive ? 'Pausar' : 'Activar'}
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="no-payments">No hay usuarios registrados</div>
+            )}
+          </div>
         )}
       </div>
     </div>
