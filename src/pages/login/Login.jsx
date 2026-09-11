@@ -8,6 +8,7 @@ export default function Login({ onLogin }) {
   const [isRegistering, setIsRegistering] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [dni, setDni] = useState('')
@@ -39,7 +40,6 @@ export default function Login({ onLogin }) {
     setLoading(true)
     setError('')
     try {
-      // 1. Check if DNI already exists
       const { data: existingUser, error: dniError } = await supabase
         .from('users')
         .select('id')
@@ -51,7 +51,6 @@ export default function Login({ onLogin }) {
         throw new Error('Este DNI ya tiene una cuenta gratis')
       }
 
-      // 2. Create user
       const { data: newUser, error: userError } = await supabase
         .from('users')
         .insert([
@@ -70,14 +69,12 @@ export default function Login({ onLogin }) {
 
       if (userError) throw userError
 
-      // 3. Create auth_status as active
       const { error: statusError } = await supabase
         .from('auth_status')
         .insert([{ user_id: newUser.id, status: true }])
 
       if (statusError) throw statusError
 
-      // 4. Log in automatically
       const token = btoa(`${newUser.user}:${Date.now()}`)
       const session = { 
         token, 
@@ -106,7 +103,6 @@ export default function Login({ onLogin }) {
     }
 
     try {
-      // Buscar en la tabla `users` donde el campo `user` sea igual
       const { data, error: queryError } = await supabase
         .from('users')
         .select('id, user, pass, role, session_version')
@@ -135,7 +131,6 @@ export default function Login({ onLogin }) {
         return
       }
 
-      // Verificar si el usuario está activo en auth_status
       const { data: authData, error: authError } = await supabase
         .from('auth_status')
         .select('status')
@@ -186,14 +181,24 @@ export default function Login({ onLogin }) {
             />
           </label>
 
-          <label>
+          <label className="password-container">
             Contraseña
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="tu contraseña"
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="tu contraseña"
+              />
+              <button 
+                type="button" 
+                className="password-toggle" 
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex="-1"
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </label>
 
           {isRegistering && (
