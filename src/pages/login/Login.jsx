@@ -8,6 +8,7 @@ export default function Login({ onLogin }) {
   const [isRegistering, setIsRegistering] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -18,8 +19,12 @@ export default function Login({ onLogin }) {
 
   const validate = () => {
     if (isRegistering) {
-      if (!username || !password || !firstName || !lastName || !dni || !phone) {
+      if (!username || !password || !confirmPassword || !firstName || !lastName || !dni || !phone) {
         setError('Por favor completa todos los campos')
+        return false
+      }
+      if (password !== confirmPassword) {
+        setError('Las contraseñas no coinciden')
         return false
       }
       if (username.length < 2) {
@@ -203,6 +208,25 @@ export default function Login({ onLogin }) {
 
           {isRegistering && (
             <>
+              <label className="password-container">
+                Confirmar Contraseña
+                <div className="password-input-wrapper">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="tu contraseña"
+                  />
+                  <button 
+                    type="button" 
+                    className="password-toggle" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex="-1"
+                  >
+                    {showPassword ? '🙈' : '👁️'}
+                  </button>
+                </div>
+              </label>
               <label>
                 Nombre
                 <input
