@@ -54,7 +54,7 @@ export default function ClientsForm({ user, initial = null, onSaved, onCancel, S
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
       <input placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-      <input placeholder="Género" value={gender} onChange={(e) => setGender(e.target.value)} />
+      <input placeholder="Información" value={gender} onChange={(e) => setGender(e.target.value)} />
       <input placeholder="Teléfono" value={tel} onChange={(e) => setTel(e.target.value)} />
       <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
 

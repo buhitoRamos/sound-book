@@ -86,11 +86,11 @@ export default function ClientsList({ user, onSelect }) {
               <div className="client-main">
                 <div className="client-top">
                   <div className="client-name">{c.name}</div>
-                  <div className="client-gender">{c.gender}</div>
+                  <div className="client-gender">{c.gender || 'sin info'}</div>
                 </div>
                 <div className="client-bottom">
                     <div className="client-email"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:8}}><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>{c.email || 'sin email'}</div>
-                    <div className="client-tel"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:8}}><path d="M22 16.92V21a1 1 0 0 1-1.11 1A19 19 0 0 1 3 4.11 1 1 0 0 1 4 3h4.09a1 1 0 0 1 1 .75c.12.57.32 1.12.6 1.63a1 1 0 0 1-.24 1.09L8.91 8.91a16 16 0 0 0 6.19 6.19l1.35-1.53a1 1 0 0 1 1.09-.24c.51.28 1.06.48 1.63.6a1 1 0 0 1 .75 1V22z"/></svg>{c.tel}</div>
+                    <div className="client-tel"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:8}}><path d="M22 16.92V21a1 1 0 0 1-1.11 1A19 19 0 0 1 3 4.11 1 1 0 0 1 4 3h4.09a1 1 0 0 1 1 .75c.12.57.32 1.12.6 1.63a1 1 0 0 1-.24 1.09L8.91 8.91a16 16 0 0 1 6.19 6.19l1.35-1.53a1 1 0 0 1 1.09-.24c.51.28 1.06.48 1.63.6a1 1 0 0 1 .75 1V22z"/></svg>{c.tel}</div>
                 </div>
               </div>
               <div className="client-actions">
