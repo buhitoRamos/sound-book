@@ -23,6 +23,9 @@ export default function AdminPayments({ user }) {
   const [viewMode, setViewMode] = useState('register')
   const [authStatuses, setAuthStatuses] = useState({})
   const [authStatusError, setAuthStatusError] = useState(null)
+  const [deleteUser, setDeleteUser] = useState(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [backupLoading, setBackupLoading] = useState(false)
 
   useEffect(() => {
     async function fetchUsers() {
@@ -242,6 +245,84 @@ export default function AdminPayments({ user }) {
     }
   }
 
+  async function handleDeleteUser() {
+    if (!deleteUser) return
+    setDeleteLoading(true)
+    try {
+      const userId = deleteUser.id
+
+      // Llamar a la función RPC que elimina usuario + bandas + jobs + pagos
+      // + admin_payments + auth_status + cuenta de auth.users
+      const { error } = await supabase.rpc('delete_user_cascade', { user_uuid: userId })
+
+      if (error) throw error
+
+      toast.success('Usuario y todos sus datos eliminados correctamente')
+      setUsers(prev => prev.filter(u => String(u.id) !== String(userId)))
+      setAuthStatuses(prev => {
+        const next = { ...prev }
+        delete next[userId]
+        return next
+      })
+      setDeleteUser(null)
+    } catch (err) {
+      console.error('Error deleting user:', err)
+      toast.error('No fue posible eliminar el usuario: ' + (err.message || 'error inesperado'))
+    } finally {
+      setDeleteLoading(false)
+    }
+  }
+
+  async function handleBackup() {
+    setBackupLoading(true)
+    try {
+      const tables = ['users', 'bands', 'jobs', 'payments', 'admin_payments', 'auth_status']
+      const backup = { exported_at: new Date().toISOString(), tables: {} }
+
+      for (const table of tables) {
+        const { data, error } = await supabase.from(table).select('*')
+        if (error) {
+          console.error(`Error fetching ${table}:`, error)
+          backup.tables[table] = { error: error.message }
+        } else {
+          backup.tables[table] = data || []
+        }
+      }
+
+      // Incluir auth.users (cuentas de login) vía RPC
+      try {
+        const { data: authUsers, error: authError } = await supabase.rpc('get_auth_users_backup')
+        if (authError) {
+          console.error('Error fetching auth.users:', authError)
+          backup.tables['auth_users'] = { error: authError.message }
+        } else {
+          backup.tables['auth_users'] = authUsers || []
+        }
+      } catch (authErr) {
+        console.error('Error fetching auth.users:', authErr)
+        backup.tables['auth_users'] = { error: authErr.message || 'error inesperado' }
+      }
+
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const dateStr = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')
+      a.href = url
+      a.download = `backup_${dateStr}.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.success('Backup descargado correctamente')
+    } catch (err) {
+      console.error('Error creating backup:', err)
+      toast.error('No fue posible crear el backup')
+    } finally {
+      setBackupLoading(false)
+    }
+  }
+
   function getMonthName(month) {
     const months = [
       'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -297,6 +378,13 @@ export default function AdminPayments({ user }) {
           onClick={() => setViewMode('users')}
         >
           Usuarios
+        </button>
+        <button
+          className="tab-button backup-button"
+          onClick={handleBackup}
+          disabled={backupLoading}
+        >
+          {backupLoading ? 'Generando...' : '⬇ Backup'}
         </button>
       </div>
 
@@ -493,6 +581,13 @@ export default function AdminPayments({ user }) {
                         >
                           {isActive ? 'Pausar' : 'Activar'}
                         </button>
+                        <button
+                          className="btn-delete-user"
+                          onClick={() => setDeleteUser(u)}
+                          disabled={loading || deleteLoading}
+                        >
+                          Eliminar
+                        </button>
                       </div>
                     </div>
                   )
@@ -504,6 +599,44 @@ export default function AdminPayments({ user }) {
           </div>
         )}
       </div>
+
+      {deleteUser && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h3 className="modal-title">Confirmar eliminación</h3>
+            <div className="modal-body">
+              <p>
+                ¿Estás seguro que deseas eliminar a{' '}
+                <strong>
+                  {deleteUser.first_name && deleteUser.last_name
+                    ? `${deleteUser.first_name} ${deleteUser.last_name}`
+                    : deleteUser.user}
+                </strong>
+                ?
+              </p>
+              <p className="delete-warning">
+                Se eliminarán también sus bandas, trabajos y pagos. Esta acción no se puede deshacer.
+              </p>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="btn secondary"
+                onClick={() => setDeleteUser(null)}
+                disabled={deleteLoading}
+              >
+                Cancelar
+              </button>
+              <button
+                className="btn danger"
+                onClick={handleDeleteUser}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? 'Eliminando...' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
