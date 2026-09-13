@@ -9,15 +9,14 @@
 --   4. pagos administrativos (admin_payments)
 --   5. estado de autenticación (auth_status)
 --   6. el usuario en public.users
---   7. el usuario en auth.users (cuenta de login)
 --
--- Se ejecuta con SECURITY DEFINER para poder acceder a auth.users,
--- que el cliente anon no puede tocar directamente.
+-- NOTA: public.users.id es de tipo BIGINT (entero), no UUID.
+-- Se ejecuta con SECURITY DEFINER para poder borrar todas las tablas.
 --
 -- Uso:
 --   1) Pegar el contenido en el SQL Editor de Supabase y ejecutar.
 --   2) Llamar desde el frontend con:
---        supabase.rpc('delete_user_cascade', { user_uuid: userId })
+--        supabase.rpc('delete_user_cascade', { user_id: userId })
 -- ============================================================
 
 -- Asegurar ON DELETE CASCADE en las tablas que referencian users(id)
@@ -74,43 +73,32 @@ $$;
 -- ============================================================
 -- Función RPC para eliminar usuario y todos sus datos
 -- ============================================================
-CREATE OR REPLACE FUNCTION public.delete_user_cascade(user_uuid uuid)
+CREATE OR REPLACE FUNCTION public.delete_user_cascade(p_user_id bigint)
 RETURNS void
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  -- Solo un admin puede ejecutar esta función
-  IF NOT EXISTS (
-    SELECT 1 FROM public.users
-    WHERE id = auth.uid() AND role = 'admin'
-  ) THEN
-    RAISE EXCEPTION 'No autorizado: solo administradores pueden eliminar usuarios';
-  END IF;
-
   -- 1. Bandas del usuario
-  DELETE FROM public.bands WHERE user_id = user_uuid;
+  DELETE FROM public.bands WHERE user_id = p_user_id;
 
   -- 2. Trabajos del usuario
-  DELETE FROM public.jobs WHERE user_id = user_uuid;
+  DELETE FROM public.jobs WHERE user_id = p_user_id;
 
   -- 3. Pagos del usuario
-  DELETE FROM public.payments WHERE user_id = user_uuid;
+  DELETE FROM public.payments WHERE user_id = p_user_id;
 
   -- 4. Pagos administrativos del usuario
-  DELETE FROM public.admin_payments WHERE user_id = user_uuid;
+  DELETE FROM public.admin_payments WHERE user_id = p_user_id;
 
   -- 5. Estado de autenticación del usuario
-  DELETE FROM public.auth_status WHERE user_id = user_uuid;
+  DELETE FROM public.auth_status WHERE user_id = p_user_id;
 
   -- 6. Usuario en public.users
-  DELETE FROM public.users WHERE id = user_uuid;
-
-  -- 7. Cuenta de login en auth.users
-  DELETE FROM auth.users WHERE id = user_uuid;
+  DELETE FROM public.users WHERE id = p_user_id;
 END;
 $$;
 
 -- Permisos: permitir que los usuarios autenticados llamen la función
-GRANT EXECUTE ON FUNCTION public.delete_user_cascade(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.delete_user_cascade(bigint) TO authenticated;

@@ -252,8 +252,8 @@ export default function AdminPayments({ user }) {
       const userId = deleteUser.id
 
       // Llamar a la función RPC que elimina usuario + bandas + jobs + pagos
-      // + admin_payments + auth_status + cuenta de auth.users
-      const { error } = await supabase.rpc('delete_user_cascade', { user_uuid: userId })
+      // + admin_payments + auth_status
+      const { error } = await supabase.rpc('delete_user_cascade', { p_user_id: userId })
 
       if (error) throw error
 
