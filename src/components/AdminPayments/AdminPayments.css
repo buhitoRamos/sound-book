@@ -30,6 +30,21 @@
   border-bottom-color: #6366f1;
 }
 
+.backup-button {
+  margin-left: auto;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.backup-button:hover:not(:disabled) {
+  color: #34d399;
+}
+
+.backup-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .payments-container {
   display: flex;
   flex-direction: column;
@@ -397,6 +412,34 @@
   color: #10b981;
 }
 
+.btn-delete-user {
+  padding: 8px 16px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete-user:hover:not(:disabled) {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-delete-user:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-warning {
+  color: #f59e0b;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
 .status-badge.paused {
   background: rgba(245, 158, 11, 0.2);
   color: #f59e0b;
@@ -433,6 +476,41 @@
 }
 
 .btn-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Botones del modal de confirmación */
+.modal-actions .btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-actions .btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6eef8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-actions .btn.secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.modal-actions .btn.danger {
+  background: #ef4444;
+  color: white;
+}
+
+.modal-actions .btn.danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.modal-actions .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
