@@ -20,12 +20,13 @@ export async function sendSupportMessage(messages, userEmail) {
   if (!supportChatUrl) {
     throw new Error('El chatbot no está configurado. Contacta al administrador.')
   }
+  if (!publicKey) {
+    throw new Error('Al chatbot le falta la clave pública de soporte. Contacta al administrador.')
+  }
 
   const headers = { 'Content-Type': 'application/json' }
-  if (publicKey) {
-    headers.apikey = publicKey
-    headers.Authorization = `Bearer ${publicKey}`
-  }
+  headers.apikey = publicKey
+  headers.Authorization = `Bearer ${publicKey}`
 
   let response
   try {

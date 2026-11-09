@@ -70,6 +70,17 @@
   font-size: 26px;
 }
 
+.support-chat-header .support-chat-clear {
+  width: auto;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.support-chat-header .support-chat-clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .support-chat-messages {
   flex: 1;
   overflow-y: auto;

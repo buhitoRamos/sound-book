@@ -97,4 +97,40 @@ describe('SupportChat', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/no se pudo conectar/i)
   })
+
+  it('requires the public support key instead of sending an unauthenticated request', async () => {
+    vi.stubEnv('VITE_SUPPORT_CHAT_PUBLIC_KEY', '')
+    render(<SupportChat open onOpen={vi.fn()} onClose={vi.fn()} />)
+
+    fireEvent.change(screen.getByLabelText(/escribe tu mensaje/i), {
+      target: { value: 'Hola' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Enviar' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/falta la clave pública/i)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('clears the conversation and draft', async () => {
+    fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ reply: 'Aquí estoy.' }),
+    })
+    render(<SupportChat open onOpen={vi.fn()} onClose={vi.fn()} />)
+
+    fireEvent.change(screen.getByLabelText(/escribe tu mensaje/i), {
+      target: { value: 'Hola' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Enviar' }))
+    await screen.findByText('Aquí estoy.')
+
+    fireEvent.change(screen.getByLabelText(/escribe tu mensaje/i), {
+      target: { value: 'Otra consulta' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Borrar charla' }))
+
+    expect(screen.queryByText('Hola')).not.toBeInTheDocument()
+    expect(screen.queryByText('Aquí estoy.')).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/escribe tu mensaje/i)).toHaveValue('')
+  })
 })

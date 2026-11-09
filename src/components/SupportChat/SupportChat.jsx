@@ -44,6 +44,12 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
     }
   }
 
+  function handleClear() {
+    setMessages([])
+    setDraft('')
+    setError('')
+  }
+
   return (
     <div className="support-chat">
       {!open && (
@@ -65,6 +71,14 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
               <strong>Buhobot</strong>
               <span>Asistente de Sound-Book</span>
             </div>
+            <button
+              type="button"
+              className="support-chat-clear"
+              onClick={handleClear}
+              disabled={sending || (!messages.length && !draft && !error)}
+            >
+              Borrar charla
+            </button>
             <button type="button" aria-label="Cerrar chat" onClick={onClose}>×</button>
           </header>
 
