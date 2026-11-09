@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { sendSupportMessage } from '../../lib/supportChat'
+import { sendSupportMessage, uploadPaymentReceipt } from '../../lib/supportChat'
 import './SupportChat.css'
 
 export default function SupportChat({ user, open, onOpen, onClose }) {
@@ -8,7 +8,9 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef(null)
+  const fileInputRef = useRef(null)
   const messagesRef = useRef(null)
+  const userEmail = user?.user || user?.email
 
   useEffect(() => {
     if (open) inputRef.current?.focus()
@@ -32,7 +34,7 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
     setSending(true)
 
     try {
-      const reply = await sendSupportMessage(updatedMessages.slice(-12), user?.email)
+      const reply = await sendSupportMessage(updatedMessages.slice(-12), userEmail)
       setMessages([...updatedMessages, { role: 'assistant', content: reply }])
     } catch (requestError) {
       setMessages(messages)
@@ -41,6 +43,35 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
     } finally {
       setSending(false)
       inputRef.current?.focus()
+    }
+  }
+
+  async function handleReceiptChange(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || sending) return
+    if (!userEmail) {
+      setError('Iniciá sesión para enviar un comprobante de pago.')
+      return
+    }
+
+    setError('')
+    setSending(true)
+    try {
+      await uploadPaymentReceipt(userEmail, file)
+      setMessages((current) => [
+        ...current,
+        { role: 'user', content: `📎 Comprobante adjunto: ${file.name}` },
+        {
+          role: 'assistant',
+          content:
+            'Recibí el comprobante y se lo envié al administrador para que lo revise. El pago todavía no está confirmado.',
+        },
+      ])
+    } catch (requestError) {
+      setError(requestError.message || 'No se pudo enviar el comprobante. Inténtalo nuevamente.')
+    } finally {
+      setSending(false)
     }
   }
 
@@ -103,6 +134,24 @@ export default function SupportChat({ user, open, onOpen, onClose }) {
             <label className="support-chat-sr-only" htmlFor="support-chat-input">
               Escribe tu mensaje
             </label>
+            <input
+              ref={fileInputRef}
+              className="support-chat-file-input"
+              type="file"
+              accept="application/pdf,image/jpeg,image/png"
+              onChange={handleReceiptChange}
+              aria-label="Adjuntar comprobante"
+            />
+            <button
+              type="button"
+              className="support-chat-attach"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={sending || !userEmail}
+              title="Adjuntar comprobante PDF, JPG o PNG"
+              aria-label="Adjuntar comprobante"
+            >
+              📎
+            </button>
             <input
               id="support-chat-input"
               ref={inputRef}

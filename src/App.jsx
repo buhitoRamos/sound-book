@@ -5,6 +5,7 @@ import AdminDashboard from './pages/admin-dashboard/AdminDashboard'
 import { Toaster, toast } from 'react-hot-toast'
 import { supabase } from './lib/supabaseClient'
 import SupportChat from './components/SupportChat/SupportChat'
+import MembershipReminder from './components/MembershipReminder/MembershipReminder'
 
 const STORAGE_KEY = 'sb_session'
 
@@ -124,6 +125,12 @@ export default function App() {
 
   return (
     <div className="app">
+      {user && user.role !== 'admin' && (
+        <MembershipReminder
+          userEmail={user.user || user.email}
+          onOpenChat={openSupportChat}
+        />
+      )}
       {loading ? (
         <div style={{
           display: 'flex',

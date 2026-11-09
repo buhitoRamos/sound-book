@@ -60,6 +60,35 @@ describe('SupportChat', () => {
     await screen.findByText('Aquí estoy.')
   })
 
+  it('forwards a payment receipt for the active account and does not confirm the payment', async () => {
+    fetch.mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+    const { container } = render(
+      <SupportChat user={{ user: 'user@example.test' }} open onOpen={vi.fn()} onClose={vi.fn()} />,
+    )
+    const file = new File(['receipt'], 'receipt.pdf', { type: 'application/pdf' })
+
+    fireEvent.change(container.querySelector('input[type="file"]'), {
+      target: { files: [file] },
+    })
+
+    expect(await screen.findByText(/el pago todavía no está confirmado/i)).toBeInTheDocument()
+    expect(fetch).toHaveBeenCalledWith(
+      'https://support.example.test/functions/v1/support-chat',
+      expect.objectContaining({
+        method: 'POST',
+        headers: {
+          apikey: 'public-test-key',
+          Authorization: 'Bearer public-test-key',
+        },
+        body: expect.any(FormData),
+      }),
+    )
+    const requestBody = fetch.mock.calls[0][1].body
+    expect(requestBody.get('app')).toBe('sound-book')
+    expect(requestBody.get('user_email')).toBe('user@example.test')
+    expect(requestBody.get('file')).toBe(file)
+  })
+
   it('shows a clear error for HTTP failures and keeps the message available to retry', async () => {
     fetch.mockResolvedValue({ ok: false, status: 503, json: async () => ({}) })
     render(<SupportChat open onOpen={vi.fn()} onClose={vi.fn()} />)

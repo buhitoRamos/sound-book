@@ -64,3 +64,56 @@ export async function sendSupportMessage(messages, userEmail) {
 
   return reply
 }
+
+async function postPaymentAction({ action, userEmail, file }) {
+  const supportChatUrl = import.meta.env.VITE_SUPPORT_CHAT_URL?.trim()
+  const publicKey = import.meta.env.VITE_SUPPORT_CHAT_PUBLIC_KEY?.trim()
+  if (!supportChatUrl) {
+    throw new Error('El chatbot no está configurado. Contacta al administrador.')
+  }
+  if (!publicKey) {
+    throw new Error('Al chatbot le falta la clave pública de soporte. Contacta al administrador.')
+  }
+
+  const headers = {
+    apikey: publicKey,
+    Authorization: `Bearer ${publicKey}`,
+  }
+  let body
+  if (file) {
+    body = new FormData()
+    body.set('action', action)
+    body.set('app', 'sound-book')
+    body.set('user_email', userEmail)
+    body.set('file', file)
+  } else {
+    headers['Content-Type'] = 'application/json'
+    body = JSON.stringify({ action, app: 'sound-book', user_email: userEmail })
+  }
+
+  let response
+  try {
+    response = await fetch(supportChatUrl, { method: 'POST', headers, body })
+  } catch {
+    throw new Error('No se pudo conectar con el servicio de soporte.')
+  }
+
+  let data
+  try {
+    data = await response.json()
+  } catch {
+    throw new Error(`El servicio de soporte devolvió una respuesta inválida (HTTP ${response.status}).`)
+  }
+  if (!response.ok || data.error) {
+    throw new Error(data.error || `Error del servicio de soporte (HTTP ${response.status}).`)
+  }
+  return data
+}
+
+export function fetchMembershipStatus(userEmail) {
+  return postPaymentAction({ action: 'membership_status', userEmail })
+}
+
+export function uploadPaymentReceipt(userEmail, file) {
+  return postPaymentAction({ action: 'payment_receipt', userEmail, file })
+}
