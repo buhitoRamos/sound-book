@@ -4,7 +4,8 @@ Documento de referencia para trabajar en este repositorio. Mantenerlo breve y ba
 
 ## Tecnologías y comandos
 
-- React 18 con JSX y Vite; instalación y scripts de desarrollo/build en `package.json`.
+- React 18 con JSX y Vite; Node.js 26.x y npm 11.x, según `package.json`.
+- Instalación y scripts de desarrollo/build en `package.json`.
 - Pruebas: Vitest, jsdom y React Testing Library. La suite está en `src/tests/`.
 - Comandos: `npm run dev`, `npm test` y `npm run build`.
 - Backend: Supabase, mediante el cliente compartido `src/lib/supabaseClient.js`.
