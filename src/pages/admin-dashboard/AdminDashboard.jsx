@@ -5,7 +5,7 @@ import Spinner from '../../components/Spinner/Spinner'
 import ChangePassword from '../../components/ChangePassword/ChangePassword'
 import './AdminDashboard.css'
 
-export default function AdminDashboard({ user, onLogout }) {
+export default function AdminDashboard({ user, onLogout, onSupportClick }) {
   const [view, setView] = useState('payments')
   const [history, setHistory] = useState(['payments'])
 
@@ -37,7 +37,7 @@ export default function AdminDashboard({ user, onLogout }) {
 
   return (
     <div>
-      <StatusBar title="Panel Administrativo" onLogout={onLogout} onMenuSelect={handleMenuSelect} adminOnlyMenu={true} />
+      <StatusBar title="Panel Administrativo" onLogout={onLogout} onMenuSelect={handleMenuSelect} onSupportClick={onSupportClick} adminOnlyMenu={true} />
       <main className="admin-dashboard-main">
         {view === 'payments' && (
           <>

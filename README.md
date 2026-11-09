@@ -78,3 +78,14 @@ He añadido `manifest.webmanifest` y enlaces en `index.html` para que el SVG `sr
 Notas:
 - Algunos navegadores (especialmente iOS Safari) prefieren un PNG para `apple-touch-icon`. Si quieres soporte máximo, puedo generar PNGs de distintos tamaños y añadirlos.
 - Para probar: abre en un móvil moderno, usa "Agregar a pantalla de inicio" y debería usar la nota musical como icono.
+
+Chatbot de soporte Buhobot
+--------------------------
+El acceso a soporte está integrado en la pantalla de inicio de sesión y en el menú de usuario. Buhobot usa la Edge Function compartida de Supabase que también utiliza PSI Manager, pero requiere la clave anónima pública de ese proyecto compartido (no la clave de Supabase propia de Sound-Book).
+
+```
+VITE_SUPPORT_CHAT_URL=https://ljynujodigqqujjvyoud.supabase.co/functions/v1/support-chat
+VITE_SUPPORT_CHAT_PUBLIC_KEY=<clave-anon-publica-del-proyecto-compartido>
+```
+
+La clave pública se envía como `apikey` y `Authorization: Bearer`. En desarrollo local se guardan en `.env.local` (ignorado por Git); para producción hay que configurar ambas variables en el hosting y volver a desplegar. Nunca uses claves `service_role` ni tokens privados en variables `VITE_*`. Reinicia Vite después de cambiar variables locales.

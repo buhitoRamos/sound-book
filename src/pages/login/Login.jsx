@@ -4,7 +4,7 @@ import NoteSVG from '../../assets/music-note.svg'
 import { supabase } from '../../lib/supabaseClient'
 import { toast } from 'react-hot-toast'
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, onSupportClick }) {
   const [isRegistering, setIsRegistering] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -291,14 +291,13 @@ export default function Login({ onLogin }) {
               ¿No tenés cuenta? <strong>Crear cuenta gratis</strong>
             </button>
           )}
-          <a
+          <button
+            type="button"
             className="login-support-link"
-            href="https://wa.me/5491139050391?text=Hola%2C%20quiero%20soporte%20de%20Sound-Book"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={onSupportClick}
           >
-            📱 Soporte Técnico
-          </a>
+            💬 Chatear con Buhobot
+          </button>
         </div>
 
         <div className="login-hint">Usa tus credenciales para acceder.</div>

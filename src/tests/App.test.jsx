@@ -65,6 +65,18 @@ describe('App', () => {
     })
   })
 
+  it('opens the support chatbot from the signed-out app', async () => {
+    render(<App />)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('login-mock')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /abrir chat de soporte/i }))
+
+    expect(screen.getByRole('dialog', { name: /chat de soporte buhobot/i })).toBeInTheDocument()
+  })
+
   it('shows dashboard after login', async () => {
     render(<App />)
 

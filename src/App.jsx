@@ -4,12 +4,18 @@ import Dashboard from './pages/dashboard/Dashboard'
 import AdminDashboard from './pages/admin-dashboard/AdminDashboard'
 import { Toaster, toast } from 'react-hot-toast'
 import { supabase } from './lib/supabaseClient'
+import SupportChat from './components/SupportChat/SupportChat'
 
 const STORAGE_KEY = 'sb_session'
 
 export default function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [supportChatOpen, setSupportChatOpen] = useState(false)
+
+  function openSupportChat() {
+    setSupportChatOpen(true)
+  }
 
   // Validate session against database (session_version + auth_status)
   async function validateSession(session) {
@@ -143,13 +149,19 @@ export default function App() {
           `}</style>
         </div>
       ) : !user ? (
-        <Login onLogin={handleLogin} />
+        <Login onLogin={handleLogin} onSupportClick={openSupportChat} />
       ) : user?.role === 'admin' ? (
-        <AdminDashboard user={user} onLogout={handleLogout} />
+        <AdminDashboard user={user} onLogout={handleLogout} onSupportClick={openSupportChat} />
       ) : (
-        <Dashboard user={user} onLogout={handleLogout} />
+        <Dashboard user={user} onLogout={handleLogout} onSupportClick={openSupportChat} />
       )}
-        <Toaster position="bottom-center" />
+      <SupportChat
+        user={user}
+        open={supportChatOpen}
+        onOpen={openSupportChat}
+        onClose={() => setSupportChatOpen(false)}
+      />
+      <Toaster position="bottom-center" />
     </div>
   )
 }

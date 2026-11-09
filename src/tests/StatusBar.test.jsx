@@ -67,10 +67,11 @@ describe('StatusBar', () => {
     expect(onLogout).toHaveBeenCalled()
   })
 
-  it('renders support link in regular menu', () => {
-    render(<StatusBar title="Dashboard" onLogout={vi.fn()} onMenuSelect={vi.fn()} />)
+  it('opens support chatbot from the regular menu', () => {
+    const onSupportClick = vi.fn()
+    render(<StatusBar title="Dashboard" onLogout={vi.fn()} onMenuSelect={vi.fn()} onSupportClick={onSupportClick} />)
     fireEvent.click(screen.getByLabelText(/abrir menú/i))
-    const supportLink = screen.getByText(/soporte/i)
-    expect(supportLink).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /chat de soporte/i }))
+    expect(onSupportClick).toHaveBeenCalledOnce()
   })
 })

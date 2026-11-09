@@ -9,7 +9,7 @@ import Earnings from '../../components/Earnings/Earnings'
 import Help from '../../components/Help/Help'
 import './Dashboard.css'
 
-export default function Dashboard({ user, onLogout }) {
+export default function Dashboard({ user, onLogout, onSupportClick }) {
   const [view, setView] = useState('artists')
   const [history, setHistory] = useState(['artists'])
 
@@ -45,7 +45,7 @@ export default function Dashboard({ user, onLogout }) {
 
   return (
     <div>
-      <StatusBar title="Dashboard" onLogout={onLogout} onMenuSelect={handleMenuSelect} />
+      <StatusBar title="Dashboard" onLogout={onLogout} onMenuSelect={handleMenuSelect} onSupportClick={onSupportClick} />
       <main className="dashboard-main">
         {view === 'artists' && (
           <>

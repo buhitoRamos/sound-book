@@ -64,12 +64,12 @@ describe('Login', () => {
     })
   })
 
-  it('shows WhatsApp support link', () => {
-    render(<Login onLogin={vi.fn()} />)
+  it('opens the support chatbot from the login screen', () => {
+    const onSupportClick = vi.fn()
+    render(<Login onLogin={vi.fn()} onSupportClick={onSupportClick} />)
 
-    const link = screen.getByText(/no tenés cuenta/i)
-    expect(link).toBeInTheDocument()
-    expect(link.closest('a')).toHaveAttribute('href', expect.stringContaining('wa.me'))
+    fireEvent.click(screen.getByRole('button', { name: /chatear con buhobot/i }))
+    expect(onSupportClick).toHaveBeenCalledOnce()
   })
 
   it('renders footer with brand name', () => {

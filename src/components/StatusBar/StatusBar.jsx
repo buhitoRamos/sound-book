@@ -3,7 +3,7 @@ import './StatusBar.css'
 import NoteSVG from '../../assets/music-note.svg'
 import { Toaster, toast } from 'react-hot-toast'
 
-export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect, adminOnlyMenu = false }) {
+export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect, onSupportClick, adminOnlyMenu = false }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const ref = useRef()
@@ -126,15 +126,15 @@ export default function StatusBar({ title = 'Dashboard', onLogout, onMenuSelect,
                   Ayuda
                 </button>
 
-                <a
+                <button
                   className="menu-item"
-                  href="https://wa.me/5491139050391?text=Hola%2C%20necesito%20soporte%20con%20Sound-Book"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false)
+                    onSupportClick && onSupportClick()
+                  }}
                 >
-                  💬 Soporte
-                </a>
+                  💬 Chat de soporte
+                </button>
 
                 <button
                   className="menu-item"
